@@ -13,18 +13,9 @@ import influxGet
 
 
 app = Flask(__name__)
-# app = Flask(__name__, static_folder="client/dist/static", template_folder="client/dist", static_url_path="/static")
-# app.config.from_object(__name__)
-
-# # enable CORS
+# enable CORS
 # CORS(app, resources={r'/*': {'origins': '*'}})
 
-
-# @app.route("/", defaults={"path": ""})
-
-# @app.route("/<path:path>")
-# def index(path):
-#     return render_template("index.html")
 
 
 # Path for our main Svelte page
@@ -39,8 +30,6 @@ def home(path):
 @app.route("/rand")
 def hello():
     return str(random.randint(0, 100))
-    # return(pd.Series(influxGet.fetchData(influxGet.query3)).to_json(orient='values'))
-    # return str("1337")
 
 @app.route("/data")
 def data():

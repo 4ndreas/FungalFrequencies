@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 defineProps({
   msg: {
     type: String,
@@ -6,83 +6,130 @@ defineProps({
   }
 })
 
+  onMounted(() => {
+    
 
+  setInterval(() => {
+    getData();
+    data.value = influxData();
+    console.log("update Data");
+  }, 3000)
+})
 
 </script>
 
-<script type="module">
-import Vizzu from 'vizzu'
-  // 'https://cdn.jsdelivr.net/npm/vizzu@0.3.1/dist/vizzu.min.js';
+
+<script type="module"  lang="ts">
+import { ref, onMounted } from 'vue'
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  ChartData
+} from 'chart.js'
+
+// import type { ChartData } from 'chart.js'
+import * as chartConfig from './chartConfig.js'
+import { Bar } from 'vue-chartjs'
+import { PolarArea } from 'vue-chartjs'
 
 
-  let data = {
-    dimensions: [ 
-        { name: 'Genres', values: [ 'Pop', 'Rock', 'Jazz', 'Metal' ] },
-        { name: 'Types', values: [ 'Hard', 'Smooth', 'Experimental' ] }
-    ],
-    measures: [
-        {
-            name: 'Popularity',
-            values: [
-                [ 114, 96, 78, 52 ],
-                [ 56, 36, 174, 121 ],
-                [ 127, 83, 94, 58 ]
-            ]
-        }
-    ]
-};
+let rawData = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
 
-  let chart = new Vizzu('myVizzu')
-  // let data = [31,265,1321,1613,1631];
-  chart.animate({
-    data: data, 
-    config: {
-        channels: {
-                x: { set: null },
-                y: { set: ['Genres','Popularity'] }
-        }
+const influxData= () => ({
+  labels: [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7'
+  ],
+  datasets: [
+    {
+      label: 't 0',
+      backgroundColor: 'rgba(179,181,198,0.2)',
+      pointBackgroundColor: 'rgba(179,181,198,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(179,181,198,1)',
+      data: getChannelData(0)
+    },
+    {
+      label: 't -1',
+      backgroundColor: 'rgba(255,99,132,0.2)',
+      pointBackgroundColor: 'rgba(255,99,132,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(255,99,132,1)',
+      data: getChannelData(1)
     }
+  ]
 })
 
+ChartJS.register(RadialLinearScale, ArcElement, Tooltip);
+// ChartJS.register(RadialLinearScale, ArcElement, Tooltip, Legend);
+const data = ref<ChartData<'polarArea'>>({
+  datasets: []
+});
+  
 
-// chart.initializing.then(
-//   chart => chart.animate({ /* ... */ }) 
-// )
+function getChannelData(time)
+{
+  return([rawData[0][time],
+          rawData[1][time],
+          rawData[2][time],
+          rawData[3][time],
+          rawData[4][time],
+          rawData[5][time],
+          rawData[6][time],
+          rawData[7][time]]);
+}
+
+  function getData() {
+	fetch("./data")
+		.then(res => res.json())
+		.then(
+		(out) =>{
+			rawData = out;
+      console.log(rawData);
+      data.value = influxData();
+		})
+		.catch(err => console.log(err));
+	}
+
+  function logData() {
+
+    data.value = influxData()
+    console.log(getChannelData(0));
+    console.log(getChannelData(1));
+  }
+
 
 </script>
 
 <template>
-  <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
-    <h3>
-      You’ve successfully created a project with
-    </h3>
+  <div class="Graph">
 
-    <div id="myVizzu" style="width:800px; height:480px;"></div>
+    <div> 
+      <PolarArea :data="data" :options="chartConfig.options" />
+    </div>
+
+    <button @click="getData">get Data</button>
+    <button @click="logData">update Data</button>
+    
+    
   </div>
 </template>
 
+
 <style scoped>
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  position: relative;
-  top: -10px;
-}
 
-h3 {
-  font-size: 1.2rem;
-}
-
-.greetings h1,
-.greetings h3 {
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
-  }
-}
 </style>

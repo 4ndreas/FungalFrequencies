@@ -4,6 +4,17 @@
 
 <script setup>
 import { RouterView } from 'vue-router'
+
+// import {
+//   Chart as ChartJS,
+//   RadialLinearScale,
+//   ArcElement,
+//   Tooltip,
+//   Legend,
+//   ChartData
+// } from 'chart.js' 
+// import { PolarArea } from 'vue-chartjs'
+
 </script>
 
 
