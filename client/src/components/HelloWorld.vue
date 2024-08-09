@@ -13,7 +13,7 @@ defineProps({
     getData();
     data.value = influxData();
     console.log("update Data");
-  }, 10000)
+  }, 3000)
 })
 
 </script>
@@ -21,6 +21,7 @@ defineProps({
 
 <script type="module"  lang="ts">
 import { ref, onMounted } from 'vue'
+
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -33,7 +34,6 @@ import {
   ChartData
 } from 'chart.js'
 
-// import type { ChartData } from 'chart.js'
 import * as chartConfig from './chartConfig.js'
 import { Bar } from 'vue-chartjs'
 import { PolarArea } from 'vue-chartjs'

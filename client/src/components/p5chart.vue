@@ -1,44 +1,44 @@
-<script setup>
-import { ref, onMounted } from 'vue'
-
+<script setup lang="ts">
+import { ref } from 'vue'
+import { onMounted } from 'vue'
 const props = defineProps(['board', 'time', 'device','canvas'])
 board = props.board;
 time = props.time;
 device = props.device;
 canvas = props.canvas;
 
+const id = ref(0)
+
+
 onMounted(() => {
   console.log("p5chart mounted");
   console.log(canvas);
-  var myp5 = new p5(s, canvas);
+  myp5 = new p5(s, canvas);
+
+  setInterval(() => {
+    
+    upData();
+  }, 5000)
 
   });
-
-  // setInterval(() => {
-  //   getData(this.board,this.time,this.device)
-  //   console.log("update Data");
-  //   console.log(rawData);
-  // }, 3000)
-
 </script>
 
 
-<script>
-import { ref, onMounted } from 'vue'
+<script type="module"  lang="ts">
 import p5 from 'p5';
-import { getCurrentInstance} from "vue";
 
 
-let board = 3;
+// props default values
+let board = 2;
 let time = -10;
 let device = "FungalFrequencies_7483aff9d108"
 let canvas = "vue-canvas";
 
-
 let rawData;
+let myp5 ;
 
 
-var s = function( p ) { 
+let s = function( p ) { 
   var x = 100; 
   var y = 100;
   var speed = 2.5;
@@ -53,43 +53,21 @@ var s = function( p ) {
     p.frameRate(1);
     
     getData(board,time, device);
-    console.log(rawData)
+    // console.log(rawData);
   };
 
   p.draw = function() {
-    plot();
+    plot(p);
   };
 
+}
 
-function getData(board, time, device) {
-	// let rawData;
-  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
-//   console.log(url)
-	fetch(url)
-		.then(res => res.json())
-		.then(out => {
-      rawData = out;
-    })
-		.catch(err => console.log(err));
+function manualUpdate()
+{
+  plot(myp5);
+}
 
-
-    // const response = await fetch(url);
-    // // response = response.json();
-    // let rawData = await response.json();
-    // // console.log(rawData)
-    // return  (await Promise.all(rawData));
-    // // return(await response.json());
-	}
-
-  async function getAsData(board, time, device) {
-    let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
-    const response = await fetch(url);
-    rawData = await response.json();
-    // console.log(rawData);
-    // return(rawData);
-	}
-
-function plot()
+function plot(p)
 {
   let nSlices = 8;
   p.background(0);
@@ -105,7 +83,31 @@ function plot()
           drawDataSlice(rawData[i],min,max,200,nSlices,i,p);   
         }
       }
-    };
+  };
+
+
+function upData()
+{
+  console.log("update Data");
+  getData(board,time,device);
+}
+
+function getData(board, time, device) {
+
+  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+
+  fetch(url)
+    .then(res => res.json())
+    .then(out => {
+      rawData = out;
+    })
+    .catch(err => console.log(err));
+}
+
+async function getAsData(board, time, device) {
+  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+  const response = await fetch(url);
+  rawData = await response.json();
 }
 
 function logData()
@@ -116,8 +118,6 @@ function logData()
 function drawDataSlice(data,min,max,r,nSlices,n,p)
 {
   let nSegments = data.length;
-
-  // console.log(data);
 
   for (var i=0;i<nSegments;i+=1)
   {
@@ -130,7 +130,6 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
           v = v + 0.5;
           v = Math.min(Math.max(v,0),1);
        }
-      //  console.log(v)
       
       p.push();                       
       p.translate(p.width/2, p.height/2);
@@ -147,10 +146,9 @@ function drawSlice(cx,cy,r,v,n,ng,p)
 {
 
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
-    // let grad = p.drawingContext.createLinearGradient(250, 250, 250+r, 250);
+
 		let s = (Math.PI*2)/(n);
 
-    // Add three color stops
     grad.addColorStop(0, "black");
     if(v > 0.3)
     {
@@ -176,16 +174,17 @@ function drawSlice(cx,cy,r,v,n,ng,p)
     p.drawingContext.fill();
 }
 
-//<div id="vue-canvas_{{ board }}_{{ device }}"></div>
+
+
 </script>
 
 
 <template>
-    <div>
+    <div  class="p5chart">
       <!-- <div :id="dynamicId"></div> -->
-      <button @click="getData">update Data</button>
-      <button @click="getAsData">update AsData</button>
-      <button @click="plot">plot</button>
+      <!-- <button @click="getData">update Data</button> -->
+      <!-- <button @click="getAsData">update AsData</button> -->
+      <button @click="manualUpdate">plot</button>
       <button @click="logData">logData</button>
       
       
