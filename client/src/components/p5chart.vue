@@ -34,7 +34,7 @@ let s = function( p ) {
   var y = 100;
   var speed = 2.5;
   p.setup = function() {
-    p.createCanvas(500  , 500);
+    p.createCanvas(320  , 320);
     // p.angleMode(p.DEGREES);
 
     // Set text color, size, and alignment
@@ -53,29 +53,29 @@ let s = function( p ) {
 
 }
 
-function manualUpdate()
-{
-  plot(myp5);
+
+function getData(board, time, device) {
+
+let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+
+fetch(url)
+  .then(res => res.json())
+  .then(out => {
+    rawData = out;
+  })
+  .catch(err => console.log(err));
 }
 
-function plot(p)
+async function getAsData(board, time, device) {
+let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+const response = await fetch(url);
+rawData = await response.json();
+}
+
+function logData()
 {
-  let nSlices = 8;
-  p.background(0);
-  let min = 0;
-  let max = 0;
-
-  for(let i= 0; i< 8; i++){
-    min = Math.min(Math.min(... rawData[i]), min);
-    max = Math.max(Math.max(... rawData[i]), max);
-  }
-  for(let i= 0; i< 8; i++){
-        if(rawData != undefined){
-          drawDataSlice(rawData[i],min,max,200,nSlices,i,p);   
-        }
-      }
-  };
-
+console.log(rawData);
+}
 
 function upData()
 {
@@ -83,28 +83,58 @@ function upData()
   getData(board,time,device);
 }
 
-function getData(board, time, device) {
-
-  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
-
-  fetch(url)
-    .then(res => res.json())
-    .then(out => {
-      rawData = out;
-    })
-    .catch(err => console.log(err));
-}
-
-async function getAsData(board, time, device) {
-  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
-  const response = await fetch(url);
-  rawData = await response.json();
-}
-
-function logData()
+function manualUpdate()
 {
-  console.log(rawData);
+  plot(myp5);
 }
+
+function plot(p)
+{
+  var nSlices = 8;
+  p.background(0);
+  var min = 0;
+  var max = 0;
+
+  var mins = [];
+  var maxs = [];
+
+  if(rawData != undefined)
+  {
+  for(let i= 0; i< 8; i++){
+    mins[i] = Math.min(... rawData[i]);
+    maxs[i] = Math.max(... rawData[i]);
+
+    min = Math.min(mins[i], min);
+    max = Math.max(maxs[i], max);
+  }
+
+  var radius = 130;
+  var dMax = Math.max(Math.abs(min),Math.abs(max));
+
+  // console.log("max:" + max + " min:" + min);
+  for(let i= 0; i< 8; i++){
+        if(rawData != undefined){
+          var segRad = radius;
+          if((mins[i] != 0 ) && (maxs[i] != 0)){
+
+            segRad = (Math.max(Math.abs(mins[i]),Math.abs(maxs[i])) / dMax) * 0.1 * radius + radius;
+
+          //   // console.log(i +" rad:" + segRad + " mins[i]"+ mins[i] + " maxs[i]"+ maxs[i] +" dMax:" + dMax);
+          // }
+          // if ((i == 3)||(i == 4))
+          // {
+         
+          // }
+          // console.log(rawData[i]);
+          }
+          drawDataSlice(rawData[i],mins[i],maxs[i],segRad,nSlices,i,p);   
+        }
+      }
+    }
+  };
+
+
+
 
 function drawDataSlice(data,min,max,r,nSlices,n,p)
 {
@@ -114,18 +144,29 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
   {
       let angle = (i* (Math.PI*2)/(nSegments * nSlices)) + (n* (Math.PI*2)/nSlices);
 
-      let v = 0.5
-       if((min != 0 ) && (max != 0))
-       {
-          v = data[i]/((Math.abs(min) + max)*1.5);
-          v = v + 0.5;
-          v = Math.min(Math.max(v,0),1);
-       }
-      
+      let v = 0.6
+      if((min != 0 ) && (max != 0))
+      {
+        var dir = 1;
+        if (data[i] < 0){
+          dir = -1;
+        }
+
+        var sx = Math.max((Math.abs(min),Math.abs(max)));
+        // v = Math.abs(data[i])/((sx)*1.5);
+
+        v = v + Math.abs(data[i])/((sx)*1.0);
+
+        v = Math.min(Math.max(v,0),1);
+        v = v*0.9;
+        
+
+      }
+
       p.push();                       
       p.translate(p.width/2, p.height/2);
       p.rotate(angle);
-      drawSlice(0,0,r,v,nSegments,nSlices,p)
+      drawSlice(0,0,r,v,nSegments,nSlices,dir,p)
 
       p.pop();                        
   }
@@ -133,24 +174,30 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
 }
 
 
-function drawSlice(cx,cy,r,v,n,ng,p)
+function drawSlice(cx,cy,r,v,n,ng,dir,p)
 {
 
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
 
 		let s = (Math.PI*2)/(n);
 
-    grad.addColorStop(0, "black");
-    if(v > 0.3)
+    var color = 'orange'
+    if(dir< 0)
     {
-      grad.addColorStop(0.2, "black");
+      color = 'cyan'
+    }
+
+    grad.addColorStop(0, "black");
+    if(v > 0.4)
+    {
+      grad.addColorStop(0.3, "black");
     }
     if(v > 0.05){
-    grad.addColorStop(v-0.05, "cyan");
+    grad.addColorStop(v-0.05, color);
     }
     grad.addColorStop(v, "white");
     if(v < 1-0.05){
-      grad.addColorStop(v+0.05, "cyan");
+      grad.addColorStop(v+0.05, color);
       grad.addColorStop(1, "black");
     }
 
@@ -174,19 +221,26 @@ function drawSlice(cx,cy,r,v,n,ng,p)
 
 <template>
     <div  class="p5chart">
-      <button @click="manualUpdate">plot</button>
-      <button @click="logData">logData</button>
+      <!-- <button @click="manualUpdate">plot</button> -->
+      <!-- <button @click="logData">logData</button> -->
     </div>
 </template>
 
 <style scoped>
 #vue-canvas {
   display: block;
-  margin: 0 auto;
-  padding: 0;
-  width: 500px;
-  height: 500px;
+  margin: 0 0;
+  padding: 0 0;
+  /* width: 500px; */
+  /* height: 500px; */
   border-radius: 0px;
-  overflow: hidden;
+  overflow: hidden;  
+}
+
+div {
+  top: 0;
+  left: 0;
+  margin: 0 0;
+  padding: 0 0;
 }
 </style>
