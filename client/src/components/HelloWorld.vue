@@ -2,7 +2,7 @@
 defineProps({
   msg: {
     type: String,
-    required: true
+    required: false
   }
 })
 
@@ -13,7 +13,7 @@ defineProps({
     getData();
     data.value = influxData();
     console.log("update Data");
-  }, 3000)
+  }, 10000)
 })
 
 </script>
@@ -116,14 +116,15 @@ function getChannelData(time)
 </script>
 
 <template>
-  <div class="Graph">
+  <div class="chart">
 
+    
     <div> 
       <PolarArea :data="data" :options="chartConfig.options" />
     </div>
 
-    <button @click="getData">get Data</button>
-    <button @click="logData">update Data</button>
+    <!-- <button @click="getData">get Data</button>
+    <button @click="logData">update Data</button> -->
     
     
   </div>
@@ -131,5 +132,9 @@ function getChannelData(time)
 
 
 <style scoped>
+.chart{
+  width: 100%;
+  /* height: 1000; */
 
+}
 </style>
