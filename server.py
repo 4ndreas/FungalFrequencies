@@ -35,6 +35,18 @@ def hello():
 def data():
     return(pd.Series(influxGet.fetchData(influxGet.query3)).to_json(orient='values'))
 
+@app.route("/idata")
+def idata():
+    try:
+        board = request.args.get('b', default = 0, type = int)
+        time = request.args.get('t', default = -10, type = int)
+        device = request.args.get('d', default = "FungalFrequencies_7483aff9d108", type = str)
+
+        q = influxGet.queryF.format(time = time, board = board, device = device)
+        print(q)
+        return(pd.Series(influxGet.fetchData(q)).to_json(orient='values'))
+    except:
+        return([])
 
 if __name__ == "__main__":
     app.run(debug=True)

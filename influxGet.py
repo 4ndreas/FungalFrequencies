@@ -57,5 +57,13 @@ query3 = """from(bucket: "fungalF")
     |> filter(fn: (r) => r["board"] == "3")
     |> filter(fn: (r) => r["device"] == "FungalFrequencies_7483aff9d108")"""
 
+queryF = """from(bucket: "fungalF")
+    |> range(start: {time}s)
+    |> filter(fn: (r) => r["_measurement"] == "adcData")
+    |> filter(fn: (r) => r["ADC"] == "ADS1115")
+    |> filter(fn: (r) => r["_field"] == "CH_0" or r["_field"] == "CH_1" or r["_field"] == "CH_3" or r["_field"] == "CH_2" or r["_field"] == "CH_4" or r["_field"] == "CH_5" or r["_field"] == "CH_6" or r["_field"] == "CH_7")
+    |> filter(fn: (r) => r["board"] == "{board}")
+    |> filter(fn: (r) => r["device"] == "{device}")"""
+
 
 print(fetchData(query3))

@@ -1,16 +1,24 @@
 <script setup>
-defineProps({
-  data: {
-    required: false
-  }  
-});
+const props = defineProps(['board', 'time', 'device'])
+
+board = props.board;
+time = props.time;
+device = props.device;
 
 onMounted(() => {
   console.log("p5chart mounted");
 
   var myp5 = new p5(s, 'vue-canvas');
-
+  // this.getData();
   });
+
+  // this.getAsData(props.board,props.time, props.device);
+
+  // setInterval(() => {
+  //   getData(this.board,this.time,this.device)
+  //   console.log("update Data");
+  //   console.log(rawData);
+  // }, 3000)
 
 </script>
 
@@ -18,6 +26,28 @@ onMounted(() => {
 <script>
 import { ref, onMounted } from 'vue'
 import p5 from 'p5';
+
+let board = 3;
+let time = -10;
+let device = ""
+
+
+console.log(board);
+console.log(time);
+console.log(device);
+
+// export default {
+//   props: ['board'],
+//   setup(props) {
+//     // setup() receives props as the first argument.
+//     console.log(props.board)
+//   }
+// }
+
+// import * as influxData from './influxData.js'
+let rawData;
+
+
 
 var s = function( p ) { // p could be any variable name
   var x = 100; 
@@ -31,99 +61,108 @@ var s = function( p ) { // p could be any variable name
     p.fill(255);
     p.textSize(20);
     p.textAlign(p.CENTER, p.CENTER);
+    p.frameRate(1);
 
     // Set the color mode to hue-saturation-brightness (HSB)
     // p.colorMode(p.HSB);
-    p.background(0);
-    let data = Array.from({length: 20}, () => Math.floor(Math.random() *2+ 20));
-    drawDataSlice(data,(Math.random() * 200),0,p);
-    data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
-    drawDataSlice(data,(Math.random() * 200),1,p);    
-    data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
-    drawDataSlice(data,(Math.random() * 200),2,p);
-    data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
-    drawDataSlice(data,(Math.random() * 200),3,p);
-    data = Array.from({length: 20}, () => Math.floor(Math.random() * 2+ 20));
-    drawDataSlice(data,(Math.random() * 200),4,p);
-    data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
-    drawDataSlice(data,(Math.random() * 200),5,p);
-    data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
-    drawDataSlice(data,(Math.random() * 200),6,p);
-    data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
-    drawDataSlice(data,(Math.random() * 200),7,p);        
+    
+    getData(board,time, device);
+    console.log(rawData)
+
+
+    // p.background(0);
+    // let data = Array.from({length: 20}, () => Math.floor(Math.random() *2+ 20));
+    // drawDataSlice(data,(Math.random() * 200),0,p);
+    // data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
+    // drawDataSlice(data,(Math.random() * 200),1,p);    
+    // data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
+    // drawDataSlice(data,(Math.random() * 200),2,p);
+    // data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
+    // drawDataSlice(data,(Math.random() * 200),3,p);
+    // data = Array.from({length: 20}, () => Math.floor(Math.random() * 2+ 20));
+    // drawDataSlice(data,(Math.random() * 200),4,p);
+    // data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
+    // drawDataSlice(data,(Math.random() * 200),5,p);
+    // data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
+    // drawDataSlice(data,(Math.random() * 200),6,p);
+    // data = Array.from({length: 20}, () => Math.floor(Math.random() *2+  20));
+    // drawDataSlice(data,(Math.random() * 200),7,p);        
   };
 
   p.draw = function() {
-    // p.background(100);
-    // p.fill(1);
-    // x += speed; 
-    // if(x > p.width){
-    //   x = 0; 
-    // }
-    // p.ellipse(x,y,50,50);
-    // // console.log(x);
-
-
-  // Clear the background
-  // p.background(0);
-
-  // // Loop through angles 0, 30, 60, 90 degrees
-  // // for (let angle=0; angle <= 360; angle += 30) {
-  // let nSegments = 20;
-  // for (var i=0;i<nSegments;i+=1)
-  // {
-  //     let angle = i* (Math.PI*2)/nSegments/8;
-  //     // console.log(angle);
-
-
-  //     // Save current coordinate system
-  //     p.push();                       
-
-  //     // Translate to center of canvas and rotate by angle
-  //     p.translate(p.width/2, p.height/2);
-  //     p.rotate(angle);
-
-  //     // Set color based on angle and draw line along x-axis
-  //     // p.stroke(angle+100, 100, 100);
-  //     // p.strokeWeight(5);
-  //     // p.line(0, 0, 150, 0);
-
-  //     drawSlice(0,0,150,0.5,nSegments,p)
-
-  //     // // Display the angle
-  //     // p.strokeWeight(1);              
-  //     // p.text(angle, 170, 0);
-
-  //     // Restore coordinate system
-  //     p.pop();                        
-  // }
-
-    // Draw the animated line
-    // p.translate(p.width/2, p.height/2);
-    // p.rotate(p.frameCount);
-    // p.stroke(255);
-    // p.strokeWeight(5);
-    // p.line(0, 0, 150, 0);   
-    
-    // let data = Array.from({length: 20}, () => Math.floor(Math.random() * 20));
-    // drawDataSlice(data,0,p);
-    // data = Array.from({length: 20}, () => Math.floor(Math.random() * 20));
-    // drawDataSlice(data,3,p);
-
-  };
+    plot();
 };
 
-function drawDataSlice(data,r,n,p)
+function getData(board, time, device) {
+	// let rawData;
+  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+//   console.log(url)
+	fetch(url)
+		.then(res => res.json())
+		.then(out => {
+      rawData = out;
+    })
+		.catch(err => console.log(err));
+
+
+    // const response = await fetch(url);
+    // // response = response.json();
+    // let rawData = await response.json();
+    // // console.log(rawData)
+    // return  (await Promise.all(rawData));
+    // // return(await response.json());
+	}
+
+  async function getAsData(board, time, device) {
+    let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+    const response = await fetch(url);
+    rawData = await response.json();
+    // console.log(rawData);
+    // return(rawData);
+	}
+
+function plot()
+{
+  let nSlices = 8;
+  p.background(0);
+  let min = 0;
+  let max = 0;
+
+  for(let i= 0; i< 8; i++){
+    min = Math.min(Math.min(... rawData[i]), min);
+    max = Math.max(Math.max(... rawData[i]), max);
+  }
+  for(let i= 0; i< 8; i++){
+        if(rawData != undefined){
+          drawDataSlice(rawData[i],min,max,200,nSlices,i,p);   
+        }
+      }
+    };
+}
+
+function logData()
+{
+  console.log(rawData);
+}
+
+function drawDataSlice(data,min,max,r,nSlices,n,p)
 {
   let nSegments = data.length;
-  let min = Math.min(... data);
-  let max = Math.max(... data) * 1.2;
-  let nSlices = 8;
+
+  // console.log(data);
 
   for (var i=0;i<nSegments;i+=1)
   {
       let angle = (i* (Math.PI*2)/(nSegments * nSlices)) + (n* (Math.PI*2)/nSlices);
-      let v = data[i]/max;
+
+      let v = 0.5
+       if((min != 0 ) && (max != 0))
+       {
+          v = data[i]/((Math.abs(min) + max)*1.5);
+          v = v + 0.5;
+          v = Math.min(Math.max(v,0),1);
+       }
+      //  console.log(v)
       
       p.push();                       
       p.translate(p.width/2, p.height/2);
@@ -134,6 +173,7 @@ function drawDataSlice(data,r,n,p)
   }
 
 }
+
 
 function drawSlice(cx,cy,r,v,n,ng,p)
 {
@@ -173,7 +213,15 @@ function drawSlice(cx,cy,r,v,n,ng,p)
 
 
 <template>
-    <div id="vue-canvas"></div>
+    <div>
+      <div id="vue-canvas"></div>
+      <button @click="getData">update Data</button>
+      <button @click="getAsData">update AsData</button>
+      <button @click="plot">plot</button>
+      <button @click="logData">logData</button>
+      
+      
+    </div>
 </template>
 
 <style scoped>
@@ -183,7 +231,7 @@ function drawSlice(cx,cy,r,v,n,ng,p)
   padding: 0;
   width: 500px;
   height: 500px;
-  border-radius: 20px;
+  border-radius: 0px;
   overflow: hidden;
 }
 </style>
