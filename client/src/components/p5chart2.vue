@@ -9,10 +9,19 @@ canvas = props.canvas;
 
 onMounted(() => {
   console.log("p5chart mounted");
+
+
+
+
+
+
+
   console.log(canvas);
   var myp5 = new p5(s, canvas);
 
   });
+
+  // this.getAsData(props.board,props.time, props.device);
 
   // setInterval(() => {
   //   getData(this.board,this.time,this.device)
