@@ -1,32 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onMounted } from 'vue'
-const props = defineProps(['board', 'time', 'device','canvas'])
-board = props.board;
-time = props.time;
-device = props.device;
-canvas = props.canvas;
-
-const id = ref(0)
-
-
-onMounted(() => {
-  console.log("p5chart mounted");
-  console.log(canvas);
-  myp5 = new p5(s, canvas);
-
-  setInterval(() => {
-    
-    upData();
-  }, 5000)
-
-  });
-</script>
-
-
-<script type="module"  lang="ts">
 import p5 from 'p5';
-
+const props = defineProps(['board', 'time', 'device','canvas'])
 
 // props default values
 let board = 2;
@@ -36,6 +12,21 @@ let canvas = "vue-canvas";
 
 let rawData;
 let myp5 ;
+
+board = props.board;
+time = props.time;
+device = props.device;
+canvas = props.canvas;
+
+onMounted(() => {
+  console.log("p5chart mounted on: " +canvas);
+  myp5 = new p5(s, canvas);
+
+  setInterval(() => {
+    
+    upData();
+  }, 5000)
+  });
 
 
 let s = function( p ) { 
@@ -174,20 +165,17 @@ function drawSlice(cx,cy,r,v,n,ng,p)
     p.drawingContext.fill();
 }
 
-
-
 </script>
 
 
+<script>
+
+</script>
+
 <template>
     <div  class="p5chart">
-      <!-- <div :id="dynamicId"></div> -->
-      <!-- <button @click="getData">update Data</button> -->
-      <!-- <button @click="getAsData">update AsData</button> -->
       <button @click="manualUpdate">plot</button>
       <button @click="logData">logData</button>
-      
-      
     </div>
 </template>
 
