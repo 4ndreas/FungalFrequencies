@@ -7,13 +7,10 @@ import numpy
 import numpy as np
 from statsmodels.tsa import stattools
 from scipy.signal import butter, lfilter, freqz
-
+import localCredentials
 # token = os.environ.get("INFLUXDB_TOKEN")
-token = "1HIwj5wtCLVN-cHDCE63ELql1BY90rbe6407HU-Enx-A4yNZ-jQfbZgFHWfGe1xGJKcYdCibZisrpI7tDq0fYQ=="
-org = "surreallabor"
-url = "http://192.168.2.10:8086"
 
-client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
+client = influxdb_client.InfluxDBClient(url=localCredentials.urlDemo, token=localCredentials.tokenDemo, org=localCredentials.orgDemo)
 query_api = client.query_api()
 
 
