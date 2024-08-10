@@ -21,7 +21,8 @@ canvas = props.canvas;
 onMounted(() => {
   console.log("p5chart mounted on: " +canvas);
   myp5 = new p5(s, canvas);
-
+  time = props.time;
+  console.log("chart sampleTime:" + time)
   setInterval(() => {
     
     upData();
@@ -100,36 +101,36 @@ function plot(p)
 
   if(rawData != undefined)
   {
-  for(let i= 0; i< 8; i++){
-    mins[i] = Math.min(... rawData[i]);
-    maxs[i] = Math.max(... rawData[i]);
+    for(let i= 0; i< 8; i++){
+      mins[i] = Math.min(... rawData[i]);
+      maxs[i] = Math.max(... rawData[i]);
 
-    min = Math.min(mins[i], min);
-    max = Math.max(maxs[i], max);
-  }
+      min = Math.min(mins[i], min);
+      max = Math.max(maxs[i], max);
+    }
 
   var radius = 130;
   var dMax = Math.max(Math.abs(min),Math.abs(max));
 
   // console.log("max:" + max + " min:" + min);
-  for(let i= 0; i< 8; i++){
-        if(rawData != undefined){
-          var segRad = radius;
-          if((mins[i] != 0 ) && (maxs[i] != 0)){
+    for(let i= 0; i< 8; i++){
+          if((mins[i] != 0 ) || (maxs[i] != 0)){
+            var segRad = radius;
+            // if((mins[i] != 0 ) && (maxs[i] != 0)){
 
-            segRad = (Math.max(Math.abs(mins[i]),Math.abs(maxs[i])) / dMax) * 0.1 * radius + radius;
+              segRad = (Math.max(Math.abs(mins[i]),Math.abs(maxs[i])) / dMax) * 0.15 * radius + radius;
 
-          //   // console.log(i +" rad:" + segRad + " mins[i]"+ mins[i] + " maxs[i]"+ maxs[i] +" dMax:" + dMax);
-          // }
-          // if ((i == 3)||(i == 4))
-          // {
-         
-          // }
-          // console.log(rawData[i]);
+            //   // console.log(i +" rad:" + segRad + " mins[i]"+ mins[i] + " maxs[i]"+ maxs[i] +" dMax:" + dMax);
+            // }
+            // if ((i == 3)||(i == 4))
+            // {
+          
+            // }
+            // console.log(rawData[i]);
+            // }
+            drawDataSlice(rawData[i],mins[i],maxs[i],segRad,nSlices,i,p);   
           }
-          drawDataSlice(rawData[i],mins[i],maxs[i],segRad,nSlices,i,p);   
         }
-      }
     }
   };
 
@@ -178,38 +179,39 @@ function drawSlice(cx,cy,r,v,n,ng,dir,p)
 {
 
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
+  // const grad = p.drawingContext.createRadialGradient(cx, cy, r/2, cx+r, cy,r/2);
 
-		let s = (Math.PI*2)/(n);
+  let s = (Math.PI*2)/(n);
 
-    var color = 'orange'
-    if(dir< 0)
-    {
-      color = 'cyan'
-    }
+  var color = 'orange'
+  if(dir< 0)
+  {
+    color = 'cyan'
+  }
 
-    grad.addColorStop(0, "black");
-    if(v > 0.4)
-    {
-      grad.addColorStop(0.3, "black");
-    }
-    if(v > 0.05){
-    grad.addColorStop(v-0.05, color);
-    }
-    grad.addColorStop(v, "white");
-    if(v < 1-0.05){
-      grad.addColorStop(v+0.05, color);
-      grad.addColorStop(1, "black");
-    }
+  grad.addColorStop(0, "black");
+  if(v > 0.4)
+  {
+    grad.addColorStop(0.3, "black");
+  }
+  if(v > 0.05){
+  grad.addColorStop(v-0.05, color);
+  }
+  grad.addColorStop(v, "white");
+  if(v < 1-0.05){
+    grad.addColorStop(v+0.05, color);
+    grad.addColorStop(1, "black");
+  }
 
-    p.drawingContext.beginPath();
-    p.drawingContext.moveTo(cx,cy);
-    p.drawingContext.fillStyle = grad;
-   
-   	
-    p.drawingContext.arc(cx,cy,r,0,s/ng,false); 
-    p.drawingContext.closePath();
-    
-    p.drawingContext.fill();
+  p.drawingContext.beginPath();
+  p.drawingContext.moveTo(cx,cy);
+  p.drawingContext.fillStyle = grad;
+  
+  
+  p.drawingContext.arc(cx,cy,r,0,s/ng,false); 
+  p.drawingContext.closePath();
+  
+  p.drawingContext.fill();
 }
 
 </script>

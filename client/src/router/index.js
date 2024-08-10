@@ -9,6 +9,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: home
+      // props: { sampletime: "-120" }
     }
   ]
 })

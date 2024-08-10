@@ -5,35 +5,8 @@
 <script setup>
 import { RouterView } from 'vue-router'
 
-// import {
-//   Chart as ChartJS,
-//   RadialLinearScale,
-//   ArcElement,
-//   Tooltip,
-//   Legend,
-//   ChartData
-// } from 'chart.js' 
-// import { PolarArea } from 'vue-chartjs'
-
 </script>
 
-
-<!-- <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import Vizzu from 'vizzu'
-
-</script>
-
-<template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-</template>
-
--->
 <style >
 .container div { margin: 0; }
 
