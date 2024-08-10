@@ -12,7 +12,7 @@ def fetchData(query):
     client = influxdb_client.InfluxDBClient(url=localCredentials.url, token=localCredentials.ffToken, org=localCredentials.org)
     query_api = client.query_api()
 
-    tables = query_api.query(query, org=org)
+    tables = query_api.query(query, org=localCredentials.org)
 
     lx = len(fileds)
 
