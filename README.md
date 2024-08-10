@@ -43,6 +43,13 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
+create a file `localCredentials.py` and add the variables:
+```python
+ffToken = "<-- YOUR TOKEN -->"
+org = "<-- YOUR ORG -->"
+url = "http://<-- DB server -->:8086
+```
+
 ### install npm 
 
 ``` 

@@ -1,20 +1,15 @@
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
+import localCredentials
 
-token = "1HIwj5wtCLVN-cHDCE63ELql1BY90rbe6407HU-Enx-A4yNZ-jQfbZgFHWfGe1xGJKcYdCibZisrpI7tDq0fYQ=="
-ffToken = "UYs8O_QEr6p_6ngPMDF4mowtFLKSFGNURMu0ITqLu43Suzkk4XSgF13fcglJ5QO1yIfxThmOI6RWY3hv2Tbolw=="
-org = "surreallabor"
-url = "http://192.168.2.155:8086"
-# url = "http://192.168.2.10:8086"
 
 fileds = ['CH_0','CH_1','CH_2','CH_3','CH_4','CH_5','CH_6','CH_7']
 
 
 def fetchData(query):
     # token = os.environ.get("INFLUXDB_TOKEN")
-
-    client = influxdb_client.InfluxDBClient(url=url, token=ffToken, org=org)
+    client = influxdb_client.InfluxDBClient(url=localCredentials.url, token=localCredentials.ffToken, org=localCredentials.org)
     query_api = client.query_api()
 
     tables = query_api.query(query, org=org)
