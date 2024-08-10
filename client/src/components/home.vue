@@ -27,25 +27,25 @@ const sampletime = -120;
     <table style="width: 1920px" cellspacing="0" cellpadding="0">
         <tr style="height:320px">
             <th>
-                <td style="width:320px" >
+                <td style="width:320px">
                     <!-- leer -->
                 </td>
-                <td style="width:320px">
+                <td style="width:320px"  class="canvas">
                     <!-- Oben board 4 -->
                     <div id = "vue-canvas_11"></div>
                     <p5chart board="5" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_11"/>  
                 </td>
-                <td style="width:320px">
+                <td style="width:320px"  class="canvas">
                     <!-- Oben board 3 -->
                     <div id = "vue-canvas_12"></div>
                     <p5chart board="4" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_12"/>  
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Oben board 2 -->
                     <div id = "vue-canvas_13"></div>
                     <p5chart board="3" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_13"/>  
                 </td>                                    
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Oben board 1 -->
                     <div id = "vue-canvas_14"></div>
                     <p5chart board="2" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_14" />   
@@ -57,15 +57,15 @@ const sampletime = -120;
         </tr>
         <tr style="height:320px">
             <th>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Links board 1 -->
                     <div id = "vue-canvas_21"></div>
                     <p5chart board="2" time="-90" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_21" />                       
                 </td>
-                <td style="width:1280px">
+                <td style="width:1280px" >
 
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Rechts board 4 -->
                     <div id = "vue-canvas_22"></div>
                     <p5chart board="5" time="-90" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_22" />       
@@ -74,7 +74,7 @@ const sampletime = -120;
         </tr>         
         <tr style="height:320px">
             <th>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Links board 2 -->
                     <div id = "vue-canvas_31"></div>
                     <p5chart board="3" time="-90" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_31" />                   
@@ -82,7 +82,7 @@ const sampletime = -120;
                 <td style="width:1280px">
 
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Rechts board 3 -->
                     <div id = "vue-canvas_32"></div>
                     <p5chart board="4" time="-90" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_32" />                      
@@ -91,14 +91,14 @@ const sampletime = -120;
         </tr> 
         <tr style="height:320px">
             <th>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Links board 3 -->
                     <div id = "vue-canvas_41"></div>
                     <p5chart board="4" time="-90" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_41" />  
                 </td>
                 <td style="width:1280px">
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Rechts board 2 -->
                     <div id = "vue-canvas_42"></div>
                     <p5chart board="3" time="-90" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_42" />       
@@ -107,7 +107,7 @@ const sampletime = -120;
         </tr>
         <tr style="height:320px">
             <th>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Links board 4 -->
                     <div id = "vue-canvas_51"></div>
                     <p5chart board="5" time="-90" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_51" />  
@@ -115,7 +115,7 @@ const sampletime = -120;
                 <td style="width:1280px">
 
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Rechts board 1 -->
                     <div id = "vue-canvas_52"></div>
                     <p5chart board="2" time="-90" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_52" />  
@@ -127,22 +127,22 @@ const sampletime = -120;
                 <td style="width:320px">
                     <!-- leer -->
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Unten board 4 -->
                     <div id = "vue-canvas_61"></div>
                     <p5chart board="5" time="-90" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_61"  />                 
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Unten board 3 -->
                     <div id = "vue-canvas_62"></div>
                     <p5chart board="4" time="-90" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_62"  />   
                 </td>
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Unten board 2 -->
                     <div id = "vue-canvas_63"></div>
                     <p5chart board="3" time="-90" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_63"  />  
                 </td>                                    
-                <td style="width:320px">
+                <td style="width:320px" class="canvas">
                     <!-- Unten board 1 -->
                     <div id = "vue-canvas_64"></div>
                     <p5chart board="2" time="-90" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_64"  />  
@@ -184,4 +184,7 @@ div {
   padding: 0 0;
 }
 
+.canvas {
+  filter: blur(1.0px);
+}
 </style>

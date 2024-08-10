@@ -5,10 +5,11 @@ import p5 from 'p5';
 const props = defineProps(['board', 'time','stepSize', 'device','canvas'])
 
 // props default values
-let board = 2;
 let time = -(15*60);
-let device = "FungalFrequencies_7483aff9d108"
 let stepSize = 10;
+
+let board = 2;
+let device = "FungalFrequencies_7483aff9d108"
 let canvas = "vue-canvas";
 
 let rawData;
@@ -20,6 +21,7 @@ board = props.board;
 device = props.device;
 canvas = props.canvas;
 
+let updateInt = 10000 + Math.random()*250;
 
 onMounted(() => {
   console.log("p5chart mounted on: " +canvas);
@@ -29,7 +31,7 @@ onMounted(() => {
   setInterval(() => {
     
     upData();
-  }, 5000)
+  }, updateInt)
   });
 
 
@@ -135,6 +137,7 @@ function plot(p)
           }
         }
     }
+    // p.drawingContext.blur(8px) 
   };
 
 
@@ -148,29 +151,47 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
   {
       let angle = (i* (Math.PI*2)/(nSegments * nSlices)) + (n* (Math.PI*2)/nSlices);
 
-      let v = 0.6
-      if((min != 0 ) && (max != 0))
-      {
-        var dir = 1;
-        if (data[i] < 0){
-          dir = -1;
-        }
-
-        var sx = Math.max((Math.abs(min),Math.abs(max)));
-        // v = Math.abs(data[i])/((sx)*1.5);
-
-        v = v + Math.abs(data[i])/((sx)*1.0);
-
-        v = Math.min(Math.max(v,0),1);
-        v = v*0.9;
-        
-
-      }
-
       p.push();                       
       p.translate(p.width/2, p.height/2);
       p.rotate(angle);
-      drawSlice(0,0,r,v,nSegments,nSlices,dir,p)
+
+
+      if((min != 0 ) || (max != 0)) //o only draw slice if valid data is available
+      {
+        
+        var hue = 47;
+        if (data[i] < 0){
+          hue = 192;
+        }
+        // // color creator
+        // var color = 'orange'
+        // if(dir< 0)
+        // {
+        //   color = 'cyan'
+        // }    
+        var amp = Math.abs(data[i])/((260)) *100; // use absolute range of data +-256mV
+        amp = Math.min(Math.max(amp,50),100);
+        // if(lightness > 90)
+        // {
+        //   console.log(lightness)
+        // }
+
+        // var color = p.color('HSB', hue,1,lightness).hex;
+        // var color = p.color('hsl('+hue+', 100%, '+lightness+'%)');
+        var Saturation = amp;
+        var lightness = 50;
+        var color = p.color('hsl('+hue+', '+Saturation+'%, '+lightness+'%)');
+        // console.log(color)
+
+        var sx = Math.max((Math.abs(min),Math.abs(max)));
+        // v = Math.abs(data[i])/((sx)*1.5);
+        let v = 0.5
+        v = v + Math.abs(data[i])/((sx)*1.0);
+        v = Math.min(Math.max(v,0),1);
+        v = v*0.9;
+ 
+        drawSlice(0,0,r,v,nSegments,nSlices,color,p)
+      }
 
       p.pop();                        
   }
@@ -178,7 +199,7 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
 }
 
 
-function drawSlice(cx,cy,r,v,n,ng,dir,p)
+function drawSlice(cx,cy,r,v,n,ng,color,p)
 {
 
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
@@ -186,24 +207,38 @@ function drawSlice(cx,cy,r,v,n,ng,dir,p)
 
   let s = (Math.PI*2)/(n);
 
-  var color = 'orange'
-  if(dir< 0)
-  {
-    color = 'cyan'
-  }
+  // var color = 'orange'
+  // if(dir< 0)
+  // {
+  //   color = 'cyan'
+  // }
+  try{
+    if(Number.isNaN(v))
+    {
+      v = 0.5;
+    }
+    
+    grad.addColorStop(0, "black");
+    if(v > 0.4)
+    {
+      grad.addColorStop(v-0.40, "black");
+      grad.addColorStop(0.3, "black");
+    }
+    if(v > 0.05){
+    grad.addColorStop(v-0.05, color);
+    }
+    grad.addColorStop(v, "white");
 
-  grad.addColorStop(0, "black");
-  if(v > 0.4)
-  {
-    grad.addColorStop(0.3, "black");
-  }
-  if(v > 0.05){
-  grad.addColorStop(v-0.05, color);
-  }
-  grad.addColorStop(v, "white");
-  if(v < 1-0.05){
-    grad.addColorStop(v+0.05, color);
+    if(v < 1-0.05){
+      grad.addColorStop(v+0.05, color);
+      
+    }
     grad.addColorStop(1, "black");
+  }
+  catch(error)
+  {
+    console.log(error);
+    console.log(v);
   }
 
   p.drawingContext.beginPath();
