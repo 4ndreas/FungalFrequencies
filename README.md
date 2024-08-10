@@ -16,12 +16,17 @@ For autobuild use
 npm run autobuild
 ```
  ### Run Python
+
+ DEV:
  ``` 
 cd FungalFrequencies
 source .venv/bin/activate
 python3 server.py
 ```
 
+ ``` 
+waitress-serve --host 127.0.0.1 server:app
+```
 
 ## Install
 
@@ -45,5 +50,3 @@ cd FungalFrequencies
 cd client 
 npm install
 ```
-
-

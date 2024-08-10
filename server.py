@@ -43,7 +43,7 @@ def idata():
         device = request.args.get('d', default = "FungalFrequencies_7483aff9d108", type = str)
 
         q = influxGet.queryF.format(time = time, board = board, device = device)
-        print(q)
+        # print(q)
         return(pd.Series(influxGet.fetchData(q)).to_json(orient='values'))
     except:
         return([])
