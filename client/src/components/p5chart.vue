@@ -2,27 +2,30 @@
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import p5 from 'p5';
-const props = defineProps(['board', 'time', 'device','canvas'])
+const props = defineProps(['board', 'time','stepSize', 'device','canvas'])
 
 // props default values
 let board = 2;
-let time = -10;
+let time = -(15*60);
 let device = "FungalFrequencies_7483aff9d108"
+let stepSize = 10;
 let canvas = "vue-canvas";
 
 let rawData;
 let myp5 ;
 
 board = props.board;
-time = props.time;
+// time = props.time;
+// stepSize = props.stepSize;
 device = props.device;
 canvas = props.canvas;
+
 
 onMounted(() => {
   console.log("p5chart mounted on: " +canvas);
   myp5 = new p5(s, canvas);
-  time = props.time;
-  console.log("chart sampleTime:" + time)
+  // time = props.time;
+  // console.log("chart sampleTime:" + time)
   setInterval(() => {
     
     upData();
@@ -44,7 +47,7 @@ let s = function( p ) {
     p.textAlign(p.CENTER, p.CENTER);
     p.frameRate(1);
     
-    getData(board,time, device);
+    getData(board,time, stepSize,device);
     // console.log(rawData);
   };
 
@@ -55,9 +58,9 @@ let s = function( p ) {
 }
 
 
-function getData(board, time, device) {
+function getData(board, time, stepSize, device) {
 
-let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+let url = "./idata?b=" + board + "&t=" + time + "&d=" + device + "&s=" + stepSize; 
 
 fetch(url)
   .then(res => res.json())
@@ -67,11 +70,11 @@ fetch(url)
   .catch(err => console.log(err));
 }
 
-async function getAsData(board, time, device) {
-let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
-const response = await fetch(url);
-rawData = await response.json();
-}
+// async function getAsData(board, time, device) {
+// let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
+// const response = await fetch(url);
+// rawData = await response.json();
+// }
 
 function logData()
 {
@@ -81,7 +84,7 @@ console.log(rawData);
 function upData()
 {
   console.log("update Data");
-  getData(board,time,device);
+  getData(board,time,stepSize,device);
 }
 
 function manualUpdate()

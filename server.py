@@ -41,8 +41,10 @@ def idata():
         board = request.args.get('b', default = 0, type = int)
         time = request.args.get('t', default = -10, type = int)
         device = request.args.get('d', default = "FungalFrequencies_7483aff9d108", type = str)
+        step = request.args.get('s', default = 1, type = int)
 
-        q = influxGet.queryF.format(time = time, board = board, device = device)
+        # q = influxGet.queryF.format(time = time, board = board, device = device)
+        q = influxGet.queryFS.format(time = time, board = board, device = device, step = step)
         # print(q)
         return(pd.Series(influxGet.fetchData(q)).to_json(orient='values'))
     except:
