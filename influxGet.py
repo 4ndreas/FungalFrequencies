@@ -2,9 +2,18 @@ import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 import localCredentials
-
+import numpy as np
 
 fileds = ['CH_0','CH_1','CH_2','CH_3','CH_4','CH_5','CH_6','CH_7']
+
+queryFS = """from(bucket: "fungalF")
+    |> range(start: {time}s)
+    |> filter(fn: (r) => r["_measurement"] == "adcData")
+    |> filter(fn: (r) => r["ADC"] == "ADS1115")
+    |> filter(fn: (r) => r["_field"] == "CH_0" or r["_field"] == "CH_1" or r["_field"] == "CH_3" or r["_field"] == "CH_2" or r["_field"] == "CH_4" or r["_field"] == "CH_5" or r["_field"] == "CH_6" or r["_field"] == "CH_7")
+    |> filter(fn: (r) => r["board"] == "{board}")
+    |> filter(fn: (r) => r["device"] == "{device}")
+    |> aggregateWindow(every: {step}s, fn: mean, createEmpty: true)"""
 
 
 def fetchData(query):
@@ -21,8 +30,7 @@ def fetchData(query):
         for record in table.records:
             for i in range(lx):
                 if(record.get_field() == fileds[i]):
-                    results[i].append((record.get_value()))
-    
+                    results[i].append((record.get_value()))    
     return results
 
 
@@ -60,14 +68,7 @@ queryF = """from(bucket: "fungalF")
     |> filter(fn: (r) => r["board"] == "{board}")
     |> filter(fn: (r) => r["device"] == "{device}")"""
 
-queryFS = """from(bucket: "fungalF")
-    |> range(start: {time}s)
-    |> filter(fn: (r) => r["_measurement"] == "adcData")
-    |> filter(fn: (r) => r["ADC"] == "ADS1115")
-    |> filter(fn: (r) => r["_field"] == "CH_0" or r["_field"] == "CH_1" or r["_field"] == "CH_3" or r["_field"] == "CH_2" or r["_field"] == "CH_4" or r["_field"] == "CH_5" or r["_field"] == "CH_6" or r["_field"] == "CH_7")
-    |> filter(fn: (r) => r["board"] == "{board}")
-    |> filter(fn: (r) => r["device"] == "{device}")
-    |> aggregateWindow(every: {step}s, fn: mean, createEmpty: true)"""
+
 
 
 # print(fetchData(query3))

@@ -10,7 +10,10 @@ from scipy.signal import butter, lfilter, freqz
 import localCredentials
 # token = os.environ.get("INFLUXDB_TOKEN")
 
-client = influxdb_client.InfluxDBClient(url=localCredentials.urlDemo, token=localCredentials.tokenDemo, org=localCredentials.orgDemo)
+# client = influxdb_client.InfluxDBClient(url=localCredentials.urlDemo, token=localCredentials.tokenDemo, org=localCredentials.orgDemo)
+
+client = influxdb_client.InfluxDBClient(url=localCredentials.url, token=localCredentials.ffToken, org=localCredentials.org)
+
 query_api = client.query_api()
 
 
@@ -51,15 +54,26 @@ query_api = client.query_api()
 # Test 2
 #  |> range(start: 2024-06-20T00:46:37.000Z, stop: 2024-06-20T03:05:20.000Z)
 
-query = """from(bucket: "surreallaborData")
-  |> range(start: 2024-06-20T00:46:37.000Z, stop: 2024-06-20T03:05:20.000Z)
+
+
+# query = """from(bucket: "surreallaborData")
+#   |> range(start: 2024-06-20T00:46:37.000Z, stop: 2024-06-20T03:05:20.000Z)
+#   |> filter(fn: (r) => r["_measurement"] == "adcData")
+#   |> filter(fn: (r) => r["ADC"] == "ADS1115")
+#   |> filter(fn: (r) => r["_field"] == "CH_0" or r["_field"] == "CH_1" or r["_field"] == "CH_2" or r["_field"] == "CH_3" or r["_field"] == "CH_4" or r["_field"] == "CH_6" or r["_field"] == "CH_5" or r["_field"] == "CH_7")
+#   |> filter(fn: (r) => r["device"] == "SporeSense_9c4b59ebd724")"""
+
+
+# 2024-08-11 11:50:19
+# 2024-08-11 12:22:40
+
+query = """from(bucket: "fungalF")
+  |> range(start: 2024-08-11T09:50:00.000Z, stop: 2024-08-11T10:22:00.000Z)
   |> filter(fn: (r) => r["_measurement"] == "adcData")
   |> filter(fn: (r) => r["ADC"] == "ADS1115")
-  |> filter(fn: (r) => r["_field"] == "CH_0" or r["_field"] == "CH_1" or r["_field"] == "CH_2" or r["_field"] == "CH_3" or r["_field"] == "CH_4" or r["_field"] == "CH_6" or r["_field"] == "CH_5" or r["_field"] == "CH_7")
-  |> filter(fn: (r) => r["device"] == "SporeSense_9c4b59ebd724")"""
-
-
-
+  |> filter(fn: (r) => r["_field"] == "CH_3")
+  |> filter(fn: (r) => r["board"] == "4")
+  |> filter(fn: (r) => r["device"] == "FungalFrequencies_7483aff9d108")"""
 
 tables = query_api.query(query, org="surreallabor")
 
@@ -70,12 +84,19 @@ for table in tables:
     # t = record.get_time().second*1000000 + record.get_time().microsecond
     # results.append((record.get_field(), record.get_value(), t, record.get_time()))
 
-    if(record.get_field() == 'CH_4'):
+    if(record.get_field() == 'CH_3'):
       results0.append((record.get_value()))
     # print(record)
 
 # plt.plot([1, 2, 3, 4])
 # plt.ylabel('some numbers')
+
+
+lPlot = len(results0)
+t = np.arange(0, lPlot, 1)
+
+plt.plot(t,results0)
+plt.show()
 
 
 # record.get_time().microsecond
@@ -204,7 +225,7 @@ t = np.arange(0, lPlot, 1)
 # plt.plot(t,results0[0:len(correlation)],t,correlation,t,autocorrelation)
 
 # plt.plot(t,results0[0:len(correlation)],t,filtered,t,spikes,t,autocorrelation)
-plt.plot(t,results0[0:len(correlation)],t,filtered,t,spikes)
+# plt.plot(t,results0[0:len(correlation)],t,filtered,t,spikes)
 # plt.plot(t,results0[0:len(correlation)],t,filtered,t,y[0:len(correlation)])
 # plt.plot(t,results0[0:len(correlation)],t,correlation)
 plt.show()
