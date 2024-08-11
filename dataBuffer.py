@@ -37,14 +37,27 @@ class dataBuffer:
         self.board = brd
         self.step = step
 
-        self.sk = spiker.spiker()
+        self.sk = [spiker.spiker(), #1
+                    spiker.spiker(),#2
+                    spiker.spiker(),#3
+                    spiker.spiker(),#4
+                    spiker.spiker(),#5
+                    spiker.spiker(),#6
+                    spiker.spiker(),#7
+                    spiker.spiker()]#8
+
+        
+        self.lenSpike = 7
         self.Update = 0
-        self.spikeWord = ""
+        self.spikeWord = ["","","","","","","",""]
 
 
         # initial querry 
         s = self.querry.format(time = self.time, board = self.board, device = self.device, step = self.step)
         self.data = self.fetchData(s)
+        if(len(self.data[0]) > self.lenSpike):
+            self.Update = self.lenSpike + 1
+
 
     def getJSON(self):
         numpyData = {   "board":self.board,  
@@ -80,11 +93,13 @@ class dataBuffer:
             self.calcSpikes()
 
     def calcSpikes(self):
-        if(self.Update> self.sk.lenSpike):
+        if(self.Update > self.lenSpike):
             self.Update = 0
             for i in range(8):
-                if(len(self.data[i])> self.sk.lenSpike):
-                    self.spikeWord = self.sk.calcSpikes(self.data[i][0:self.sk.lenSpike])
+                if(len(self.data[i])> self.lenSpike):
+                    arr = self.data[i][0:self.lenSpike]
+                    if not None in arr:
+                        self.spikeWord[i] = self.sk[i].calcSpikes(arr)
 
             
     def fetchData(self,query):

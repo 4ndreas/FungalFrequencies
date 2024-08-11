@@ -127,7 +127,8 @@ class spiker:
         results0 = np.multiply(results0,-1)
         while i <  len(results0)-self.lenSpike:
             arr = results0[i:i+self.lenSpike]
-            res = self.calcSpikes(arr)
+            if not None in arr[:]:
+                res = self.calcSpikes(arr)
             
             if(res != ""):
                 words.append(res)
@@ -141,40 +142,42 @@ class spiker:
 
         result = ""
 
-        
-        corr = numpy.correlate(self.spike,arr, mode='same')
-        # self.correlation.extend(corr)
-        # self.autocorrelation.extend( arr - corr )
+        try:
+            corr = numpy.correlate(self.spike,arr, mode='same')
+            # self.correlation.extend(corr)
+            # self.autocorrelation.extend( arr - corr )
 
-        s = np.clip(corr - arr,-2,0)
+            s = np.clip(corr - arr,-2,0)
 
-        corr2 = numpy.correlate(self.spike2,arr, mode='same')
-        s = np.clip(s + np.clip(corr2 - arr,-2,0),-2,0)
+            corr2 = numpy.correlate(self.spike2,arr, mode='same')
+            s = np.clip(s + np.clip(corr2 - arr,-2,0),-2,0)
 
-        corr3 = numpy.correlate(self.spike3,arr, mode='same')
-        s = np.clip(s + np.clip(corr3 - arr,-2,0),-2,0)
+            corr3 = numpy.correlate(self.spike3,arr, mode='same')
+            s = np.clip(s + np.clip(corr3 - arr,-2,0),-2,0)
 
-        f = np.piecewise(s, [s > -self.zeroThr, s <= -self.zeroThr], [0, 1])
+            f = np.piecewise(s, [s > -self.zeroThr, s <= -self.zeroThr], [0, 1])
 
-        for j in range(0,len(f)):
-            if f[j] == 1:
-                if self.zeroCounter > 0:
-                    zeros = ''.join(chr(ord('0')) for i in range(self.zeroCounter))   
-                    self.spikeString += zeros
+            for j in range(0,len(f)):
+                if f[j] == 1:
+                    if self.zeroCounter > 0:
+                        zeros = ''.join(chr(ord('0')) for i in range(self.zeroCounter))   
+                        self.spikeString += zeros
 
-                self.spikeString += '1'
-                self.zeroCounter = 0
-                self.stringCounter = self.zerosDist
-            else:
-                if (self.stringCounter > 0):
-                    self.stringCounter -= 1
-                    self.zeroCounter += 1
+                    self.spikeString += '1'
+                    self.zeroCounter = 0
+                    self.stringCounter = self.zerosDist
                 else:
-                    if self.spikeString != "":
-                        result = self.spikeString
-                        print(self.spikeString)
-                        self.spikeString = ""
-                        self.zeroCounter = 0
+                    if (self.stringCounter > 0):
+                        self.stringCounter -= 1
+                        self.zeroCounter += 1
+                    else:
+                        if self.spikeString != "":
+                            result = self.spikeString
+                            # print(self.spikeString)
+                            self.spikeString = ""
+                            self.zeroCounter = 0
+        except:
+            print("An exception occurred")                        
         
         return (result)
 

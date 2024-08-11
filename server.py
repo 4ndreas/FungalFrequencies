@@ -56,17 +56,22 @@ dataBuff = [dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_7483aff9d108"
             dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_50f776b3a3a0",bufferstep)] # Rechts board 4
 
 spikeWord = ""
-spikeBoard = -1
+spikeBoard = ""
 
 @scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
 def job1():
     global dataBuff, spikeWord, spikeBoard
 
-    print("update buffers")
+    # print("update buffers")
     for i in range(len(dataBuff)):
         dataBuff[i].update()
-        if(dataBuff[i].spikeWord != ""):
-             print(dataBuff[i].spikeWord)
+        for j in range(8):
+            if(dataBuff[i].spikeWord[j] != ""): 
+                spikeWord = dataBuff[i].spikeWord[j]
+                spikeBoard = str(i) + "_" + str(j)
+                dataBuff[i].spikeWord = ""
+
+                print("Board:" + spikeBoard + " Data: " + spikeWord)
 
 
 # Path for our main Svelte page
@@ -111,7 +116,7 @@ def bdata():
 
     return(dataBuff[board].getJSON())
 
-@app.route("/bdata")
+@app.route("/spike")
 def spike():
     global spikeWord, spikeBoard
     spikeData = { "board": spikeBoard,  
