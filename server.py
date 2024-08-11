@@ -65,7 +65,7 @@ def job1():
     print("update buffers")
     for i in range(len(dataBuff)):
         dataBuff[i].update()
-        if(dataBuff[i].spikeWord == ""):
+        if(dataBuff[i].spikeWord != ""):
              print(dataBuff[i].spikeWord)
 
 
