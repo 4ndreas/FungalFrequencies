@@ -35,25 +35,25 @@ scheduler.start()
 buffertime = -10*60
 bufferstep = 5
 
-dataBuff = [dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_7483aff9d108",bufferstep), # Oben board 1
-            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_7483aff9d108",bufferstep), # Oben board 2
-            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_7483aff9d108",bufferstep), # Oben board 3
-            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_7483aff9d108",bufferstep), # Oben board 4
+dataBuff = [dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_7483aff9d108",bufferstep), #0 Oben board 1
+            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_7483aff9d108",bufferstep), #1 Oben board 2
+            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_7483aff9d108",bufferstep), #2 Oben board 3
+            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_7483aff9d108",bufferstep), #3 Oben board 4
 
-            dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_944e71b3a3a0",bufferstep), # Links board 1
-            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_944e71b3a3a0",bufferstep), # Links board 2
-            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_944e71b3a3a0",bufferstep), # Links board 3
-            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_944e71b3a3a0",bufferstep), # Links board 4
+            dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_944e71b3a3a0",bufferstep), #4 Links board 1
+            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_944e71b3a3a0",bufferstep), #5 Links board 2
+            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_944e71b3a3a0",bufferstep), #6 Links board 3
+            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_944e71b3a3a0",bufferstep), #7 Links board 4
 
-            dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_10d1aff9d108",bufferstep), # Unten board 1
-            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_10d1aff9d108",bufferstep), # Unten board 2
-            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_10d1aff9d108",bufferstep), # Unten board 3
-            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_10d1aff9d108",bufferstep), # Unten board 4
+            dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_10d1aff9d108",bufferstep), #8 Unten board 1
+            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_10d1aff9d108",bufferstep), #9 Unten board 2
+            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_10d1aff9d108",bufferstep), #10 Unten board 3
+            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_10d1aff9d108",bufferstep), #11 Unten board 4
 
-            dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_50f776b3a3a0",bufferstep), # Rechts board 1
-            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_50f776b3a3a0",bufferstep), # Rechts board 2
-            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_50f776b3a3a0",bufferstep), # Rechts board 3
-            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_50f776b3a3a0",bufferstep)] # Rechts board 4
+            dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_50f776b3a3a0",bufferstep), #12 Rechts board 1
+            dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_50f776b3a3a0",bufferstep), #13 Rechts board 2
+            dataBuffer.dataBuffer(buffertime,4, "FungalFrequencies_50f776b3a3a0",bufferstep), #14 Rechts board 3
+            dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_50f776b3a3a0",bufferstep)] #15 Rechts board 4
 
 spikeWord = ""
 spikeBoard = ""

@@ -2,45 +2,54 @@
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import p5 from 'p5';
-const props = defineProps(['board', 'time','stepSize', 'device','canvas'])
+// const props = defineProps(['board','time','stepSize', 'device','buffered','animate','radius','canvas'])
+const props = defineProps({
+                            board: { type: Number,default: 2},
+                            time: { type: Number,default: -(15*60)},
+                            stepSize: { type: Number,default: 10},
+                            device: { type: String,default: "FungalFrequencies_7483aff9d108"},
+                            buffered: { type: Boolean,default: false},
+                            animate: { type: Boolean, default: false},
+                            slicesToShow: { type: Number, default: 1},
+                            radius: { type: Number, default: 130},
+                            cWidth: { type: Number, default: 320},
+                            canvas: { type: String, required: true}
+                          });
 
-// props default values
-let time = -(15*60);
-let stepSize = 10;
-
-let board = 2;
-let device = "FungalFrequencies_7483aff9d108"
-let canvas = "vue-canvas";
+// 
+let time = props.time;
+let stepSize = props.stepSize;
+let radius = props.radius;
+let cWidth = props.cWidth;
+let board = props.board;
+let device = props.device;
+let canvas = props.canvas;
+let buffered = props.buffered;
+let animate = props.animate;
+let slicesToShow = props.slicesToShow;
 
 let rawData;
 let myp5 ;
-
-board = props.board;
-// time = props.time;
-// stepSize = props.stepSize;
-device = props.device;
-canvas = props.canvas;
-
 let updateInt = 10000 + Math.random()*250;
+let animationCounter = 0
+let animationChannel = 0
+
 
 onMounted(() => {
-  console.log("p5chart mounted on: " +canvas);
+  console.log("p5chart mounted on: " + canvas);
   myp5 = new p5(s, canvas);
-  // time = props.time;
-  // console.log("chart sampleTime:" + time)
+
   setInterval(() => {
     
     upData();
   }, updateInt)
-  });
+});
 
 
+// create p5 canvas draw
 let s = function( p ) { 
-  var x = 100; 
-  var y = 100;
-  var speed = 2.5;
   p.setup = function() {
-    p.createCanvas(320  , 320);
+    p.createCanvas(cWidth  , cWidth);
     // p.angleMode(p.DEGREES);
 
     // Set text color, size, and alignment
@@ -49,44 +58,50 @@ let s = function( p ) {
     p.textAlign(p.CENTER, p.CENTER);
     p.frameRate(1);
     
-    getData(board,time, stepSize,device);
-    // console.log(rawData);
+    upData();
+    // getData(board,time, stepSize,device);
   };
 
   p.draw = function() {
     plot(p);
   };
-
 }
-
 
 function getData(board, time, stepSize, device) {
 
-let url = "./idata?b=" + board + "&t=" + time + "&d=" + device + "&s=" + stepSize; 
+  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device + "&s=" + stepSize; 
 
-fetch(url)
-  .then(res => res.json())
-  .then(out => {
-    rawData = out;
-  })
-  .catch(err => console.log(err));
+  fetch(url)
+    .then(res => res.json())
+    .then(out => {
+      rawData = out;
+    })
+    .catch(err => console.log(err));
 }
 
-// async function getAsData(board, time, device) {
-// let url = "./idata?b=" + board + "&t=" + time + "&d=" + device
-// const response = await fetch(url);
-// rawData = await response.json();
-// }
+function getBufferedData(id){
 
-function logData()
-{
-console.log(rawData);
+  let url = "./bdata?b=" + id; 
+
+  fetch(url)
+    .then(res => res.json())
+    .then(out => {
+      rawData = out.data;
+    })
+    .catch(err => console.log(err));  
 }
 
 function upData()
 {
   console.log("update Data");
-  getData(board,time,stepSize,device);
+  if(buffered)
+  {
+    getBufferedData(board);
+  }
+  else
+  {
+    getData(board,time,stepSize,device);
+  }
 }
 
 function manualUpdate()
@@ -96,7 +111,25 @@ function manualUpdate()
 
 function plot(p)
 {
-  var nSlices = 8;
+  var nSlices = slicesToShow;
+  if(animate)
+  {
+    // nSlices = 1;
+    animationCounter++;
+
+    if(animationCounter > 30)
+    {
+      console.log(animationCounter)
+      animationChannel ++;
+      animationCounter = 0;
+      if(animationChannel > 7)
+        {
+          animationChannel = 0;
+        }
+    }
+
+  }
+
   p.background(0);
   var min = 0;
   var max = 0;
@@ -114,30 +147,22 @@ function plot(p)
       max = Math.max(maxs[i], max);
     }
 
-  var radius = 130;
+  // var radius = 130;
   var dMax = Math.max(Math.abs(min),Math.abs(max));
+    for(let j= 0; j< nSlices; j++){
 
-  // console.log("max:" + max + " min:" + min);
-    for(let i= 0; i< 8; i++){
+          var i = j;
+          if(animate)
+          {
+            i = animationChannel;
+          }
           if((mins[i] != 0 ) || (maxs[i] != 0)){
             var segRad = radius;
-            // if((mins[i] != 0 ) && (maxs[i] != 0)){
-
-              segRad = (Math.max(Math.abs(mins[i]),Math.abs(maxs[i])) / dMax) * 0.15 * radius + radius;
-
-            //   // console.log(i +" rad:" + segRad + " mins[i]"+ mins[i] + " maxs[i]"+ maxs[i] +" dMax:" + dMax);
-            // }
-            // if ((i == 3)||(i == 4))
-            // {
-          
-            // }
-            // console.log(rawData[i]);
-            // }
+              segRad = (Math.max(Math.abs(mins[i]),Math.abs(maxs[i])) / dMax) * 0.20 * radius + radius;
             drawDataSlice(rawData[i],mins[i],maxs[i],segRad,nSlices,i,p);   
           }
         }
     }
-    // p.drawingContext.blur(8px) 
   };
 
 
@@ -145,6 +170,10 @@ function plot(p)
 
 function drawDataSlice(data,min,max,r,nSlices,n,p)
 {
+  if(animate)
+  {
+    n = 0;
+  }
   let nSegments = data.length;
 
   for (var i=0;i<nSegments;i+=1)
@@ -162,19 +191,9 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
         var hue = 47;
         if (data[i] < 0){
           hue = 192;
-        }
-        // // color creator
-        // var color = 'orange'
-        // if(dir< 0)
-        // {
-        //   color = 'cyan'
-        // }    
+        } 
         var amp = Math.abs(data[i])/((260)) *100; // use absolute range of data +-256mV
         amp = Math.min(Math.max(amp,50),100);
-        // if(lightness > 90)
-        // {
-        //   console.log(lightness)
-        // }
 
         // var color = p.color('HSB', hue,1,lightness).hex;
         // var color = p.color('hsl('+hue+', 100%, '+lightness+'%)');
@@ -207,11 +226,6 @@ function drawSlice(cx,cy,r,v,n,ng,color,p)
 
   let s = (Math.PI*2)/(n);
 
-  // var color = 'orange'
-  // if(dir< 0)
-  // {
-  //   color = 'cyan'
-  // }
   try{
     if(Number.isNaN(v))
     {
@@ -261,8 +275,6 @@ function drawSlice(cx,cy,r,v,n,ng,color,p)
 
 <template>
     <div  class="p5chart">
-      <!-- <button @click="manualUpdate">plot</button> -->
-      <!-- <button @click="logData">logData</button> -->
     </div>
 </template>
 
