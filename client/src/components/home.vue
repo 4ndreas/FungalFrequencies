@@ -23,141 +23,52 @@ const sampletime = -120;
 
 <template>
     <div id="home" class="home" > 
+        <div class="funghiGraph" id="oben0"></div>
+        <div class="funghiGraph" id="oben1"></div>
 
-    <table style="width: 1920px" cellspacing="0" cellpadding="0">
-        <tr style="height:320px">
-            <th>
-                <td style="width:320px">
-                    <!-- leer -->
-                </td>
-                <td style="width:320px"  class="canvas">
-                    <!-- Oben board 4 -->
-                    <div id = "vue-canvas_11"></div>
-                    <!-- <p5chart board="5" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_11"/>   -->
-                    <p5chart :board="3" :buffered="true" canvas="vue-canvas_11"/>  
-                </td>
-                <td style="width:320px"  class="canvas">
-                    <!-- Oben board 3 -->
-                    <div id = "vue-canvas_12"></div>
-                    <p5chart :board="2" :buffered="true" canvas="vue-canvas_12"/> 
-                    <!-- <p5chart board="4" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_12"/>   -->
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Oben board 2 -->
-                    <div id = "vue-canvas_13"></div>
-                    <p5chart :board="1" :buffered="true" canvas="vue-canvas_13"/> 
-                    <!-- <p5chart board="3" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_13"/>   -->
-                </td>                                    
-                <td style="width:320px" class="canvas">
-                    <!-- Oben board 1 -->
-                    <div id = "vue-canvas_14"></div>
-                    <p5chart :board="0" :buffered="true" canvas="vue-canvas_14"/> 
-                    <!-- <p5chart board="2" time="-90" device="FungalFrequencies_7483aff9d108" canvas="vue-canvas_14" />    -->
-                </td>
-                <td style="width:320px">
-                    <!-- leer -->
-                </td>     
-            </th>        
-        </tr>
-        <tr style="height:320px">
-            <th>
-                <td style="width:320px" class="canvas">
-                    <!-- Links board 1 -->
-                    <div id = "vue-canvas_21"></div>
-                    <p5chart :board="2" :buffered="true" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_21" />                       
-                </td>
-                <td style="width:1280px" >
+        <p5chart :board="0" :buffered="true" :time="-90"  canvas="oben1"/>  
+        <div class="funghiGraph" id="oben2"></div>
+        <p5chart :board="1" :buffered="true" :time="-90" canvas="oben2"/>  
+        <div class="funghiGraph" id="oben3"></div>
+        <p5chart :board="2" :buffered="true" :time="-90" canvas="oben3"/>  
+        <div class="funghiGraph" id="oben4"></div>
+        <p5chart :board="3" :buffered="true" :time="-90" canvas="oben4" />  
+        <div class="funghiGraph" id="oben5"></div>
 
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Rechts board 4 -->
-                    <div id = "vue-canvas_22"></div>
-                    <p5chart :board="5" :buffered="true" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_22" />       
-                </td>  
-            </th>                                           
-        </tr>         
-        <tr style="height:320px">
-            <th>
-                <td style="width:320px" class="canvas">
-                    <!-- Links board 2 -->
-                    <div id = "vue-canvas_31"></div>
-                    <p5chart :board="3" :buffered="true" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_31" />                   
-                </td>
-                <td style="width:1280px">
 
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Rechts board 3 -->
-                    <div id = "vue-canvas_32"></div>
-                    <p5chart :board="4" :buffered="true" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_32" />                      
-                </td>    
-            </th>                                         
-        </tr> 
-        <tr style="height:320px">
-            <th>
-                <td style="width:320px" class="canvas">
-                    <!-- Links board 3 -->
-                    <div id = "vue-canvas_41"></div>
-                    <p5chart :board="4" :buffered="true" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_41" />  
-                </td>
-                <td style="width:1280px">
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Rechts board 2 -->
-                    <div id = "vue-canvas_42"></div>
-                    <p5chart :board="3" :buffered="true" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_42" />       
-                </td>   
-            </th>                                         
-        </tr>
-        <tr style="height:320px">
-            <th>
-                <td style="width:320px" class="canvas">
-                    <!-- Links board 4 -->
-                    <div id = "vue-canvas_51"></div>
-                    <p5chart :board="5" :buffered="true" device="FungalFrequencies_944e71b3a3a0" canvas="vue-canvas_51" />  
-                </td>
-                <td style="width:1280px">
+        <div class="funghiGraph" id="links1"></div>
+        <p5chart :board="4" :buffered="true" :time="-90" canvas="links1" />     
+        <div class="funghiGraph" id="links2"></div>
+        <p5chart :board="5" :buffered="true" :time="-90"  canvas="links2" /> 
+        <div class="funghiGraph" id="links3"></div>
+        <p5chart :board="6" :buffered="true" :time="-90" canvas="links3" />  
+        <div class="funghiGraph" id="links4"></div>
+        <p5chart :board="7" :buffered="true" :time="-90" canvas="links4" />      
 
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Rechts board 1 -->
-                    <div id = "vue-canvas_52"></div>
-                    <p5chart :board="2" :buffered="true" device="FungalFrequencies_50f776b3a3a0" canvas="vue-canvas_52" />  
-                </td>
-            </th>                                            
-        </tr>        
-        <tr style="height:320px">
-            <th>
-                <td style="width:320px">
-                    <!-- leer -->
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Unten board 4 -->
-                    <div id = "vue-canvas_61"></div>
-                    <p5chart :board="5" :buffered="true" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_61"  />                 
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Unten board 3 -->
-                    <div id = "vue-canvas_62"></div>
-                    <p5chart :board="4" :buffered="true" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_62"  />   
-                </td>
-                <td style="width:320px" class="canvas">
-                    <!-- Unten board 2 -->
-                    <div id = "vue-canvas_63"></div>
-                    <p5chart :board="3" :buffered="true" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_63"  />  
-                </td>                                    
-                <td style="width:320px" class="canvas">
-                    <!-- Unten board 1 -->
-                    <div  id = "vue-canvas_64"></div>
-                    <p5chart :board="2" :buffered="true" device="FungalFrequencies_10d1aff9d108" canvas="vue-canvas_64"  />  
-                </td>
-                <td style="width:320px">
 
-                </td>  
-            </th>           
-        </tr>                   
-    </table>
+        <div class="funghiGraph" id="rechts1"></div>
+        <p5chart :board="8" :buffered="true" :time="-90" canvas="rechts1" />      
+        <div class="funghiGraph" id="rechts2"></div>
+        <p5chart :board="9" :buffered="true" :time="-90" canvas="rechts2" />
+        <div class="funghiGraph" id="rechts3"></div>
+        <p5chart :board="10" :buffered="true" :time="-90" canvas="rechts3" />       
+        <div class="funghiGraph" id="rechts4"></div> 
+        <p5chart :board="11" :buffered="true" :time="-90" canvas="rechts4" />     
 
+        <div id="centerDisplay"></div>
+
+        <div class="ecke" id="unten0"></div>
+        <div class="funghiGraph" id="unten1"></div>
+        <p5chart :board="12" :buffered="true" :time="-90" canvas="unten1"  />  
+        <div class="funghiGraph" id="unten2"></div>
+        <p5chart :board="13" :buffered="true" :time="-90" canvas="unten2"  />   
+        <div class="funghiGraph" id="unten3"></div>
+        <p5chart :board="14" :buffered="true" :time="-90" canvas="unten3"  />  
+        <div class="funghiGraph" id="unten4"></div>
+        <p5chart :board="15" :buffered="true" :time="-90" canvas="unten4"  />  
+        <div class="ecke" id="unten5"></div>
+        <div></div>
+        
     <div>
         <div class = "vue-canvas_center" id = "vue-canvas_ce"></div>
         <p5chart :board="0" :buffered="true" :spiker="true" :radius="350" :cWidth="1200" :slicesToShow="1" canvas="vue-canvas_ce" /> 
@@ -202,5 +113,175 @@ div {
 
 .canvas {
   filter: blur(1.0px);
+}
+
+#oben0 {
+    background: #000;
+    width: 320px;
+    height: 320px;
+}
+
+#oben1 {
+    position: absolute;
+    top: 0;
+    left: 320px;
+    width: 320px;
+    height: 320px;
+}
+
+#oben2 {
+    position: absolute;
+    top: 0;
+    left: 640px;
+    width: 320px;
+    height: 320px;
+}
+
+#oben3 {
+    position: absolute;
+    top: 0;
+    left: 960px;
+    width: 320px;
+    height: 320px;
+}
+
+#oben4 {
+    position: absolute;
+    top: 0;
+    left: 1280px;
+    width: 320px;
+    height: 320px;
+}
+
+#oben5 {
+    background: #000;
+    width: 320px;
+    height: 320px;
+    position: absolute;
+    top: 0;
+    left: 1600px;
+ }
+
+#links1 {
+    position: absolute;
+    top: 320px;
+    left: 0px;
+    width: 320px;
+    height: 320px;
+}
+    
+#links2 {
+    position: absolute;
+    top: 640px;
+    left: 0px;
+    width: 320px;
+    height: 320px;
+}
+
+#links3 {
+    position: absolute;
+    top: 960px;
+    left: 0px;
+    width: 320px;
+    height: 320px;
+}
+
+#links4 {
+    position: absolute;
+    top: 1280px;
+    left: 0px;
+    width: 320px;
+    height: 320px;
+}
+
+#rechts1 {
+    position: absolute;
+    top: 320px;
+    left: 1600px;
+    width: 320px;
+    height: 320px;
+}
+    
+#rechts2 {
+    position: absolute;
+    top: 640px;
+    left: 1600px;
+    width: 320px;
+    height: 320px;
+}
+
+#rechts3 {
+    position: absolute;
+    top: 960px;
+    left: 1600px;
+    width: 320px;
+    height: 320px;
+}
+
+#rechts4 {
+    position: absolute;
+    top: 1280px;
+    left: 1600px;
+    width: 320px;
+    height: 320px;
+} 
+
+#centerDisplay {
+    background: #000;
+    width: 1280px;
+    height: 1280px;
+    position: absolute;
+    top: 320px;
+    left: 320px;
+}
+
+#unten0 {
+    background: #000;
+    width: 320px;
+    height: 320px;
+    position: absolute;
+    top: 1600px;
+    left: 0px;
+}
+
+#unten1 {
+    position: absolute;
+    top: 1600px;
+    left: 320px;
+    width: 320px;
+    height: 320px;
+}
+
+#unten2 {
+    position: absolute;
+    top: 1600px;
+    left: 640px;
+    width: 320px;
+    height: 320px;
+}
+
+#unten3 {
+    position: absolute;
+    top: 1600px;
+    left: 960px;
+    width: 320px;
+    height: 320px;
+}
+
+#unten4 {
+    position: absolute;
+    top: 1600px;
+    left: 1280px;
+    width: 320px;
+    height: 320px;
+}
+
+#unten5 {
+    background: #000;
+    width: 320px;
+    height: 320px;
+    position: absolute;
+    top: 1600px;
+    left: 1600px;
 }
 </style>
