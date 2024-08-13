@@ -141,19 +141,20 @@ class spiker:
     def calcSpikes(self,arr):
 
         result = ""
+        thres = 2.5
 
         try:
             corr = numpy.correlate(self.spike,arr, mode='same')
             # self.correlation.extend(corr)
             # self.autocorrelation.extend( arr - corr )
 
-            s = np.clip(corr - arr,-2,0)
+            s = np.clip(corr - arr,-thres)
 
             corr2 = numpy.correlate(self.spike2,arr, mode='same')
-            s = np.clip(s + np.clip(corr2 - arr,-2,0),-2,0)
+            s = np.clip(s + np.clip(corr2 - arr,-thres),-thres)
 
             corr3 = numpy.correlate(self.spike3,arr, mode='same')
-            s = np.clip(s + np.clip(corr3 - arr,-2,0),-2,0)
+            s = np.clip(s + np.clip(corr3 - arr,-thres),-thres)
 
             f = np.piecewise(s, [s > -self.zeroThr, s <= -self.zeroThr], [0, 1])
 
@@ -172,7 +173,8 @@ class spiker:
                         self.zeroCounter += 1
                     else:
                         if self.spikeString != "":
-                            result = self.spikeString
+                            if len(self.spikeString) > 1:                            
+                                result = self.spikeString
                             # print(self.spikeString)
                             self.spikeString = ""
                             self.zeroCounter = 0

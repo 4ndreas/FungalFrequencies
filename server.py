@@ -32,8 +32,8 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
-buffertime = -20*60
-bufferstep = 5
+buffertime = -30*60
+bufferstep = 10
 
 dataBuff = [dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_7483aff9d108",bufferstep), #0 Oben board 1
             dataBuffer.dataBuffer(buffertime,3, "FungalFrequencies_7483aff9d108",bufferstep), #1 Oben board 2
@@ -115,7 +115,7 @@ def idata():
 def bdata():
     # Buffered Data
     board = request.args.get('b', default = 0, type = int)
-    board = max(min(board,len(dataBuff)),1)-1
+    board = max(min(board,len(dataBuff)),1)
 
     return(dataBuff[board].getJSON())
 

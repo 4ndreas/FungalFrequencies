@@ -11,12 +11,14 @@ import home from './components/home.vue'
 .container div { margin: 0; }
 
 .home {
+   
     position: absolute;
     top: 0px;
     left: 0px;
 }
 
 body {
+  /* filter: invert(1); */
   margin-top:0;
   margin-right:0;
   margin-bottom:0;

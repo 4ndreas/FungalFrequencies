@@ -13,7 +13,7 @@ const props = defineProps({
                             animate: { type: Boolean, default: false},
                             spiker: { type: Boolean, default: false},
                             slicesToShow: { type: Number, default: 8},
-                            radius: { type: Number, default: 130},
+                            radius: { type: Number, default: 100},
                             cWidth: { type: Number, default: 320},
                             canvas: { type: String, required: true}
                           });
@@ -44,6 +44,10 @@ let updateInt = 10000 + Math.random()*1000;
 let animationCounter = 0
 let animationChannel = 0
 
+if(spiker)
+{
+  updateInt = 5000;
+}
 
 onMounted(() => {
   console.log("p5chart mounted on: " + canvas);
@@ -130,70 +134,16 @@ function upData()
         (spike.spikeWord != out.spikeWord)
         ){
           saveIMG();
-          board = spike.board;
-          dataAutoUpdate = true;
           spike = out;
-          console.log("spike update board" + board + " channel:" + spike.channel + " Word:" + spike.spikeWord);
-          
+          dataAutoUpdate = true;
+          board = spike.board;
+          console.log("spike update board:" + spike.board + " channel:" + spike.channel + " Word:" + spike.spikeWord);
         }
       })
       .catch(err => console.log(err));
   }
 }
 
-
-function dataURItoBlob(dataURI) {
-    // convert base64/URLEncoded data component to raw binary data held in a string
-    var byteString;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
-    else
-        byteString = unescape(dataURI.split(',')[1]);
-    // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    // write the bytes of the string to a typed array
-    var ia = new Uint8Array(byteString.length);
-    for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ia], {type:mimeString});
-}
-
-function saveIMG()
-{
-  var currentdate = new Date(); 
-var datetime = + currentdate.getFullYear() + "-"
-                + (currentdate.getMonth()+1)  + "-" 
-                + currentdate.getDate() + "T"
-
-                + currentdate.getHours() + "_"  
-                + currentdate.getMinutes() + "_" 
-                + currentdate.getSeconds();
-
-var filename = datetime + "_B"+ board+ "_C"+ spike.channel + "W:" + spike.spikeWord +".png";
-//   // var img = myp5.save( filename); 
-//   var img = myp5.toDataURL("image/jpeg", 0.8);
-
-// const blob = myp5.canvas.toBlob(function(blob){...}, 'image/jpeg', 0.95);
-
-const blob = dataURItoBlob(myp5.canvas.toDataURL());
-const mypostparameters= new FormData();
-mypostparameters.append('image', blob, filename);
-axios.post('/upload' , mypostparameters);
-
-// const cCanvas = document.getElementById(canvas);
-  // const canvasData = myp5.canvas.toDataURL();
-  
-  // fetch('/upload', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/octet-stream' },
-  //   body: canvasData
-  // });
-
-// const mypostparameters= new FormData()
-//  mypostparameters.append('image', canvasData, filename);
-//  axios.post('/upload' , mypostparameters);
-}
 
 function manualUpdate()
 {
@@ -247,18 +197,16 @@ function plot(p)
           if(spiker)
           {
             i = spike.channel;
+            dMax = 256;
           }
           if((mins[i] != 0 ) || (maxs[i] != 0)){
             var segRad = radius;
-              segRad = (Math.max(Math.abs(mins[i]),Math.abs(maxs[i])) / dMax) * 0.20 * radius + radius;
+              segRad = (Math.max(Math.abs(mins[i]),Math.abs(maxs[i])) / dMax) * 0.750 * radius + radius;
             drawDataSlice(rawData[i],mins[i],maxs[i],segRad,nSlices,i,p);   
           }
         }
     }
   };
-
-
-
 
 function drawDataSlice(data,min,max,r,nSlices,n,p)
 {
@@ -278,24 +226,29 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
 
       if((min != 0 ) || (max != 0)) //o only draw slice if valid data is available
       {
-        var hue = 47;
-        if (data[i] < 0){
-          hue = 192;
-        } 
-        var amp = Math.abs(data[i])/((260)) *100; // use absolute range of data +-256mV
-        amp = Math.min(Math.max(amp,50),100);
+        // var hue = 47;
+        // if (data[i] < 0){
+        //   hue = 192;
+        // } 
+
+        var hue = 60;
+
+        var amp = Math.abs(data[i])/((260)) *95; // use absolute range of data +-256mV
+        amp = Math.min(Math.max(amp,20),71);
 
         // var color = p.color('HSB', hue,1,lightness).hex;
         // var color = p.color('hsl('+hue+', 100%, '+lightness+'%)');
         var Saturation = amp;
-        var lightness = 50;
+        // var Saturation = 71;
+        var lightness = 55;
         var color = p.color('hsl('+hue+', '+Saturation+'%, '+lightness+'%)');
         // console.log(color)
 
         var sx = Math.max((Math.abs(min),Math.abs(max)));
+        // var sx = Math.abs(min) + Math.abs(max);
         // v = Math.abs(data[i])/((sx)*1.5);
-        let v = 0.5
-        v = v + Math.abs(data[i])/((sx)*1.0);
+        let v = 0.6
+        v = v + Math.abs(data[i])/((sx)*4.0);
         v = Math.min(Math.max(v,0),1);
         v = v*0.9;
  
@@ -307,14 +260,13 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
 
 }
 
-
 function drawSlice(cx,cy,r,v,n,ng,color,p)
 {
 
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
   // const grad = p.drawingContext.createRadialGradient(cx, cy, r/2, cx+r, cy,r/2);
 
-  let s = (Math.PI*2)/(n)*1.05;
+  let s = (Math.PI*2)/(n)*1.10;
 
   try{
     if(Number.isNaN(v))
@@ -322,22 +274,41 @@ function drawSlice(cx,cy,r,v,n,ng,color,p)
       v = 0.5;
     }
     
+    // grad.addColorStop(0, "black");
+    // if(v > 0.4)
+    // {
+    //   grad.addColorStop(v-0.40, "black");
+    //   grad.addColorStop(0.3, "black");
+    // }
+    // if(v > 0.05){
+    // grad.addColorStop(v-0.05, color);
+    // }
+    // grad.addColorStop(v, "white");
+
+    // if(v < 1-0.05){
+    //   grad.addColorStop(v+0.05, color);
+      
+    // }
+    // grad.addColorStop(1, "black");
+
     grad.addColorStop(0, "black");
-    if(v > 0.4)
-    {
-      grad.addColorStop(v-0.40, "black");
-      grad.addColorStop(0.3, "black");
-    }
+
+    // grad.addColorStop(0, "black");
+    // if(v > 0.4)
+    // {
+    //   grad.addColorStop(v-0.4, "black");
+    //   // grad.addColorStop(0.25, "black");
+    // }
     if(v > 0.05){
-    grad.addColorStop(v-0.05, color);
+    grad.addColorStop(v-0.02, color);
     }
     grad.addColorStop(v, "white");
 
     if(v < 1-0.05){
-      grad.addColorStop(v+0.05, color);
+      grad.addColorStop(v+0.02, color);
       
     }
-    grad.addColorStop(1, "black");
+    grad.addColorStop(1, "black");    
   }
   catch(error)
   {
@@ -355,6 +326,63 @@ function drawSlice(cx,cy,r,v,n,ng,color,p)
   
   p.drawingContext.fill();
 }
+
+
+
+
+function dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ia], {type:mimeString});
+}
+
+function saveIMG()
+{
+//   var currentdate = new Date(); 
+// var datetime = + currentdate.getFullYear() + "-"
+//                 + (currentdate.getMonth()+1)  + "-" 
+//                 + currentdate.getDate() + "T"
+
+//                 + currentdate.getHours() + "_"  
+//                 + currentdate.getMinutes() + "_" 
+//                 + currentdate.getSeconds();
+
+// var filename = datetime + "_B"+ board+ "_C"+ spike.channel + "W:" + spike.spikeWord +".png";
+//   // var img = myp5.save( filename); 
+//   var img = myp5.toDataURL("image/jpeg", 0.8);
+
+// const blob = myp5.canvas.toBlob(function(blob){...}, 'image/jpeg', 0.95);
+
+// const blob = dataURItoBlob(myp5.canvas.toDataURL());
+// const mypostparameters= new FormData();
+// mypostparameters.append('image', blob, filename);
+// axios.post('/upload' , mypostparameters);
+
+// const cCanvas = document.getElementById(canvas);
+  // const canvasData = myp5.canvas.toDataURL();
+  
+  // fetch('/upload', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/octet-stream' },
+  //   body: canvasData
+  // });
+
+// const mypostparameters= new FormData()
+//  mypostparameters.append('image', canvasData, filename);
+//  axios.post('/upload' , mypostparameters);
+}
+
 
 </script>
 
