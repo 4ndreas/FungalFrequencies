@@ -39,7 +39,7 @@ channel: 0,
 spikeWord: "" };
 
 let dataAutoUpdate = true;
-let myp5 ;
+let myp5;
 let updateInt = 10000 + Math.random()*1000;
 let animationCounter = 0
 let animationChannel = 0
@@ -92,6 +92,18 @@ function getData(board, time, stepSize, device) {
     .catch(err => console.log(err));
 }
 
+function getDataS(board, time, stepSize) {
+  var url = "./jdata?b=" + board + "&t=" + time + "&s=" + stepSize; 
+
+  fetch(url)
+    .then(res => res.json())
+    .then(out => {
+      rawData = out;
+    })
+    .catch(err => console.log(err));
+}
+
+
 function getBufferedData(id){
 
   var url = "./bdata?b=" + id; 
@@ -110,18 +122,23 @@ function upData()
 
   if(dataAutoUpdate)
   {
-    if(buffered)
-    {
-      getBufferedData(board);
-    }
-    else
-    {
-      getData(board,time,stepSize,device);
-    }
     if(spiker)
     {
       dataAutoUpdate = false
+      getDataS(board, time, stepSize)
     }
+    else
+    {
+      if(buffered)
+      {
+        getBufferedData(board);
+      }
+      else
+      {
+        getData(board,time,stepSize,device);
+      }
+    }
+
   }
 
   if(spiker){
@@ -266,7 +283,7 @@ function drawSlice(cx,cy,r,v,n,ng,color,p)
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
   // const grad = p.drawingContext.createRadialGradient(cx, cy, r/2, cx+r, cy,r/2);
 
-  let s = (Math.PI*2)/(n)*1.10;
+  let s = (Math.PI*2)/(n)*1.25;
 
   try{
     if(Number.isNaN(v))

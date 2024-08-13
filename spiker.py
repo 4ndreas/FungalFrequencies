@@ -141,20 +141,20 @@ class spiker:
     def calcSpikes(self,arr):
 
         result = ""
-        thres = 2.5
+        thres = 2
 
         try:
             corr = numpy.correlate(self.spike,arr, mode='same')
             # self.correlation.extend(corr)
             # self.autocorrelation.extend( arr - corr )
 
-            s = np.clip(corr - arr,-thres)
+            s = np.clip(corr - arr,-thres,0)
 
             corr2 = numpy.correlate(self.spike2,arr, mode='same')
-            s = np.clip(s + np.clip(corr2 - arr,-thres),-thres)
+            s = np.clip(s + np.clip(corr2 - arr,-thres,0),-thres,0)
 
             corr3 = numpy.correlate(self.spike3,arr, mode='same')
-            s = np.clip(s + np.clip(corr3 - arr,-thres),-thres)
+            s = np.clip(s + np.clip(corr3 - arr,-thres,0),-thres,0)
 
             f = np.piecewise(s, [s > -self.zeroThr, s <= -self.zeroThr], [0, 1])
 
@@ -178,8 +178,9 @@ class spiker:
                             # print(self.spikeString)
                             self.spikeString = ""
                             self.zeroCounter = 0
-        except:
-            print("An exception occurred")                        
+        except Exception as e:
+            print(e)
+            print("An exception occurred in calcSpikes")                        
         
         return (result)
 

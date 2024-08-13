@@ -26,13 +26,13 @@ const sampletime = -120;
         <div class="funghiGraph" id="oben0"></div>
 
         <div class="funghiGraph" id="oben1"></div>
-        <p5chart :board="0" :buffered="true" :time="-90" canvas="oben1"/>  
+        <p5chart :board="2" :buffered="true" :time="-90" canvas="oben1"/>  
         <div class="funghiGraph" id="oben2"></div>
         <p5chart :board="1" :buffered="true" :time="-90" canvas="oben2"/>  
         <div class="funghiGraph" id="oben3"></div>
-        <p5chart :board="2" :buffered="true" :time="-90" canvas="oben3"/>  
+        <p5chart :board="1" :buffered="true" :time="-90" canvas="oben3"/>  
         <div class="funghiGraph" id="oben4"></div>
-        <p5chart :board="3" :buffered="true" :time="-90" canvas="oben4" />  
+        <p5chart :board="0" :buffered="true" :time="-90" canvas="oben4" />  
 
         <div class="funghiGraph" id="oben5"></div>
 
@@ -46,32 +46,33 @@ const sampletime = -120;
         <p5chart :board="7" :buffered="true" :time="-90" canvas="links4" />      
 
         <div class="funghiGraph" id="rechts1"></div>
-        <p5chart :board="8" :buffered="true" :time="-90" canvas="rechts1" />      
+        <p5chart :board="15" :buffered="true" :time="-90" canvas="rechts1" />      
         <div class="funghiGraph" id="rechts2"></div>
-        <p5chart :board="9" :buffered="true" :time="-90" canvas="rechts2" />
+        <p5chart :board="14" :buffered="true" :time="-90" canvas="rechts2" />
         <div class="funghiGraph" id="rechts3"></div>
-        <p5chart :board="10" :buffered="true" :time="-90" canvas="rechts3" />       
+        <p5chart :board="13" :buffered="true" :time="-90" canvas="rechts3" />       
         <div class="funghiGraph" id="rechts4"></div> 
-        <p5chart :board="11" :buffered="true" :time="-90" canvas="rechts4" />     
+        <p5chart :board="12" :buffered="true" :time="-90" canvas="rechts4" />     
 
         <div id="centerDisplay"></div>
 
         <div class="ecke" id="unten0"></div>
         <div class="funghiGraph" id="unten1"></div>
-        <p5chart :board="12" :buffered="true" :time="-90" canvas="unten1"  />  
+        <p5chart :board="8" :buffered="true" :time="-90" canvas="unten1"  />  
         <div class="funghiGraph" id="unten2"></div>
-        <p5chart :board="13" :buffered="true" :time="-90" canvas="unten2"  />   
+        <p5chart :board="9" :buffered="true" :time="-90" canvas="unten2"  />   
         <div class="funghiGraph" id="unten3"></div>
-        <p5chart :board="14" :buffered="true" :time="-90" canvas="unten3"  />  
+        <p5chart :board="10" :buffered="true" :time="-90" canvas="unten3"  />  
         <div class="funghiGraph" id="unten4"></div>
-        <p5chart :board="15" :buffered="true" :time="-90" canvas="unten4"  />  
+        <p5chart :board="11" :buffered="true" :time="-90" canvas="unten4"  />  
         <div class="ecke" id="unten5"></div>
         <div></div>
         
-    <div>
-        <div class = "vue-canvas_center" id = "vue-canvas_ce"></div>
-        <p5chart :board="0" :buffered="true" :spiker="true" :radius="350" :cWidth="1200" :slicesToShow="1" canvas="vue-canvas_ce" /> 
-    </div>
+        <div>
+            <div class = "vue-canvas_center" id = "vue-canvas_ce"></div>
+            <p5chart :board="0" :buffered="true" :time="-3000" :stepSize="2" :spiker="true" :radius="350" :cWidth="1200" :slicesToShow="1" canvas="vue-canvas_ce" /> 
+        </div>
+
     </div>
 </template>
 
