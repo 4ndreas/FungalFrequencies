@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import p5chart from './p5chart.vue';
+import timerMS from './timerMS.vue';
 import { ref, onMounted } from 'vue'
 // const props = defineProps(['sampletime'])
 
@@ -14,6 +15,7 @@ import { ref, onMounted } from 'vue'
 // let sampletime  = -120;// console.log("Sampletime: " + props.sampletime )
 const sampletime = -120;
 
+
 </script>
 
 
@@ -23,7 +25,9 @@ const sampletime = -120;
 
 <template>
     <div id="home" class="home" > 
-        <div class="funghiGraph" id="oben0"></div>
+        <div class="funghiGraph" id="oben0">
+            <timerMS/>
+        </div>
 
         <div class="funghiGraph" id="oben1"></div>
         <p5chart :board="2" :buffered="true" :time="-90" canvas="oben1"/>  
