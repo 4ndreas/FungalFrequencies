@@ -68,7 +68,7 @@ query5 = """from(bucket: "fungalF")
   |> aggregateWindow(every: 5s, fn: mean, createEmpty: true)"""
 
 
-tables = query_api.query(query5, org="surreallabor")
+tables = query_api.query(query4, org="surreallabor")
 
 results = []
 results0 = []

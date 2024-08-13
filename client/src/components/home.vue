@@ -24,17 +24,17 @@ const sampletime = -120;
 <template>
     <div id="home" class="home" > 
         <div class="funghiGraph" id="oben0"></div>
-        <div class="funghiGraph" id="oben1"></div>
 
-        <p5chart :board="0" :buffered="true" :time="-90"  canvas="oben1"/>  
+        <div class="funghiGraph" id="oben1"></div>
+        <p5chart :board="0" :buffered="true" :time="-90" canvas="oben1"/>  
         <div class="funghiGraph" id="oben2"></div>
         <p5chart :board="1" :buffered="true" :time="-90" canvas="oben2"/>  
         <div class="funghiGraph" id="oben3"></div>
         <p5chart :board="2" :buffered="true" :time="-90" canvas="oben3"/>  
         <div class="funghiGraph" id="oben4"></div>
         <p5chart :board="3" :buffered="true" :time="-90" canvas="oben4" />  
-        <div class="funghiGraph" id="oben5"></div>
 
+        <div class="funghiGraph" id="oben5"></div>
 
         <div class="funghiGraph" id="links1"></div>
         <p5chart :board="4" :buffered="true" :time="-90" canvas="links1" />     
@@ -44,7 +44,6 @@ const sampletime = -120;
         <p5chart :board="6" :buffered="true" :time="-90" canvas="links3" />  
         <div class="funghiGraph" id="links4"></div>
         <p5chart :board="7" :buffered="true" :time="-90" canvas="links4" />      
-
 
         <div class="funghiGraph" id="rechts1"></div>
         <p5chart :board="8" :buffered="true" :time="-90" canvas="rechts1" />      

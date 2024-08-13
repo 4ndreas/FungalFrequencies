@@ -32,7 +32,7 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
-buffertime = -10*60
+buffertime = -20*60
 bufferstep = 5
 
 dataBuff = [dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_7483aff9d108",bufferstep), #0 Oben board 1
