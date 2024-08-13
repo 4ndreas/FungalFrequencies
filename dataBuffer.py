@@ -49,7 +49,7 @@ class dataBuffer:
         
         self.lenSpike = 7
         self.Update = 0
-        self.spikeWord = ["","","","","","","",""]
+        self.spikeWord = ["","","","","","","","",""]
 
 
         # initial querry 

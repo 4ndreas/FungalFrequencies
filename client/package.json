@@ -10,6 +10,7 @@
     "autobuild": "vite build --watch"
   },
   "dependencies": {
+    "axios": "^1.7.3",
     "chart.js": "^4.4.3",
     "p5": "^1.10.0",
     "vizzu": "^0.12.0",

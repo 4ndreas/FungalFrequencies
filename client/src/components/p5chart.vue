@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import p5 from 'p5';
+import axios from 'axios';
 // const props = defineProps(['board','time','stepSize', 'device','buffered','animate','radius','canvas'])
 const props = defineProps({
                             board: { type: Number,default: 2},
@@ -10,7 +11,8 @@ const props = defineProps({
                             device: { type: String,default: "FungalFrequencies_7483aff9d108"},
                             buffered: { type: Boolean,default: false},
                             animate: { type: Boolean, default: false},
-                            slicesToShow: { type: Number, default: 1},
+                            spiker: { type: Boolean, default: false},
+                            slicesToShow: { type: Number, default: 8},
                             radius: { type: Number, default: 130},
                             cWidth: { type: Number, default: 320},
                             canvas: { type: String, required: true}
@@ -26,11 +28,19 @@ let device = props.device;
 let canvas = props.canvas;
 let buffered = props.buffered;
 let animate = props.animate;
+let spiker = props.spiker;
 let slicesToShow = props.slicesToShow;
 
 let rawData;
+
+let spike = {
+board: 0,
+channel: 0,
+spikeWord: "" };
+
+let dataAutoUpdate = true;
 let myp5 ;
-let updateInt = 10000 + Math.random()*250;
+let updateInt = 10000 + Math.random()*1000;
 let animationCounter = 0
 let animationChannel = 0
 
@@ -68,8 +78,7 @@ let s = function( p ) {
 }
 
 function getData(board, time, stepSize, device) {
-
-  let url = "./idata?b=" + board + "&t=" + time + "&d=" + device + "&s=" + stepSize; 
+  var url = "./idata?b=" + board + "&t=" + time + "&d=" + device + "&s=" + stepSize; 
 
   fetch(url)
     .then(res => res.json())
@@ -81,7 +90,7 @@ function getData(board, time, stepSize, device) {
 
 function getBufferedData(id){
 
-  let url = "./bdata?b=" + id; 
+  var url = "./bdata?b=" + id; 
 
   fetch(url)
     .then(res => res.json())
@@ -94,14 +103,96 @@ function getBufferedData(id){
 function upData()
 {
   console.log("update Data");
-  if(buffered)
+
+  if(dataAutoUpdate)
   {
-    getBufferedData(board);
+    if(buffered)
+    {
+      getBufferedData(board);
+    }
+    else
+    {
+      getData(board,time,stepSize,device);
+    }
+    if(spiker)
+    {
+      dataAutoUpdate = false
+    }
   }
-  else
-  {
-    getData(board,time,stepSize,device);
+
+  if(spiker){
+    var url = "./spike";
+    fetch(url)
+      .then(res => res.json())
+      .then(out => {
+        if((spike.board != out.board)||
+        (spike.channel != out.channel)||
+        (spike.spikeWord != out.spikeWord)
+        ){
+          saveIMG();
+          board = spike.board;
+          dataAutoUpdate = true;
+          spike = out;
+          console.log("spike update board" + board + " channel:" + spike.channel + " Word:" + spike.spikeWord);
+          
+        }
+      })
+      .catch(err => console.log(err));
   }
+}
+
+
+function dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ia], {type:mimeString});
+}
+
+function saveIMG()
+{
+  var currentdate = new Date(); 
+var datetime = + currentdate.getFullYear() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getDate() + "T"
+
+                + currentdate.getHours() + "_"  
+                + currentdate.getMinutes() + "_" 
+                + currentdate.getSeconds();
+
+var filename = datetime + "_B"+ board+ "_C"+ spike.channel + "W:" + spike.spikeWord +".png";
+//   // var img = myp5.save( filename); 
+//   var img = myp5.toDataURL("image/jpeg", 0.8);
+
+// const blob = myp5.canvas.toBlob(function(blob){...}, 'image/jpeg', 0.95);
+
+const blob = dataURItoBlob(myp5.canvas.toDataURL());
+const mypostparameters= new FormData();
+mypostparameters.append('image', blob, filename);
+axios.post('/upload' , mypostparameters);
+
+// const cCanvas = document.getElementById(canvas);
+  // const canvasData = myp5.canvas.toDataURL();
+  
+  // fetch('/upload', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/octet-stream' },
+  //   body: canvasData
+  // });
+
+// const mypostparameters= new FormData()
+//  mypostparameters.append('image', canvasData, filename);
+//  axios.post('/upload' , mypostparameters);
 }
 
 function manualUpdate()
@@ -114,7 +205,6 @@ function plot(p)
   var nSlices = slicesToShow;
   if(animate)
   {
-    // nSlices = 1;
     animationCounter++;
 
     if(animationCounter > 30)
@@ -127,7 +217,6 @@ function plot(p)
           animationChannel = 0;
         }
     }
-
   }
 
   p.background(0);
@@ -147,7 +236,6 @@ function plot(p)
       max = Math.max(maxs[i], max);
     }
 
-  // var radius = 130;
   var dMax = Math.max(Math.abs(min),Math.abs(max));
     for(let j= 0; j< nSlices; j++){
 
@@ -155,6 +243,10 @@ function plot(p)
           if(animate)
           {
             i = animationChannel;
+          }
+          if(spiker)
+          {
+            i = spike.channel;
           }
           if((mins[i] != 0 ) || (maxs[i] != 0)){
             var segRad = radius;
@@ -184,10 +276,8 @@ function drawDataSlice(data,min,max,r,nSlices,n,p)
       p.translate(p.width/2, p.height/2);
       p.rotate(angle);
 
-
       if((min != 0 ) || (max != 0)) //o only draw slice if valid data is available
       {
-        
         var hue = 47;
         if (data[i] < 0){
           hue = 192;
@@ -224,7 +314,7 @@ function drawSlice(cx,cy,r,v,n,ng,color,p)
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
   // const grad = p.drawingContext.createRadialGradient(cx, cy, r/2, cx+r, cy,r/2);
 
-  let s = (Math.PI*2)/(n);
+  let s = (Math.PI*2)/(n)*1.05;
 
   try{
     if(Number.isNaN(v))

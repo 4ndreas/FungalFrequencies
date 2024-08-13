@@ -4,7 +4,7 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 
-from flask import Flask, send_from_directory, render_template , request,jsonify,json
+from flask import Flask, send_from_directory, render_template , request,jsonify,json ,redirect, url_for
 from flask_cors import CORS, cross_origin
 from flask_apscheduler import APScheduler
 from flask import g
@@ -56,22 +56,25 @@ dataBuff = [dataBuffer.dataBuffer(buffertime,2, "FungalFrequencies_7483aff9d108"
             dataBuffer.dataBuffer(buffertime,5, "FungalFrequencies_50f776b3a3a0",bufferstep)] #15 Rechts board 4
 
 spikeWord = ""
-spikeBoard = ""
+spikeBoard = 0
+spikeChannel = 0
 
-@scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
+@scheduler.task('interval', id='do_job_1', seconds=5, misfire_grace_time=900)
 def job1():
-    global dataBuff, spikeWord, spikeBoard
+    global dataBuff, spikeWord, spikeBoard, spikeChannel
 
     # print("update buffers")
     for i in range(len(dataBuff)):
         dataBuff[i].update()
         for j in range(8):
-            if(dataBuff[i].spikeWord[j] != ""): 
+            if(dataBuff[i].spikeWord[j] != ""):  
                 spikeWord = dataBuff[i].spikeWord[j]
-                spikeBoard = str(i) + "_" + str(j)
-                dataBuff[i].spikeWord = ""
+                # spikeBoard = str(i) + "_" + str(j)
+                spikeBoard = i
+                spikeChannel = j
+                dataBuff[i].spikeWord[j] = ""
 
-                print("Board:" + spikeBoard + " Data: " + spikeWord)
+                print("Board:" + str(i) + "_" + str(j) + " Data: " + spikeWord)
 
 
 # Path for our main Svelte page
@@ -91,7 +94,7 @@ def hello():
 @app.route("/data")
 def data():
     x = influxGet.fetchData(influxGet.query3)
-    print(x)
+    # print(x)
     return(pd.Series(x).to_json(orient='values'))
 
 @app.route("/idata")
@@ -118,11 +121,23 @@ def bdata():
 
 @app.route("/spike")
 def spike():
-    global spikeWord, spikeBoard
+    global spikeWord, spikeBoard,spikeChannel
     spikeData = { "board": spikeBoard,  
+                  "channel": spikeChannel,
                   "spikeWord": spikeWord}
     
     return(json.dumps(spikeData))
+
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    uploaded_file = request.files['file']
+    if uploaded_file.filename != '':
+        uploaded_file.save(uploaded_file.filename)
+    data = {"status": "success"}
+    return data, 200
+
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False)
