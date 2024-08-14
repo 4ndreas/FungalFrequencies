@@ -1,9 +1,12 @@
 <template>
   <home />
+  <!-- <RouterView /> -->
 </template>
 
 <script setup>
 import home from './components/home.vue'
+// import { RouterView } from 'vue-router'
+
 
 </script>
 

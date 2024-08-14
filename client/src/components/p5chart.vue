@@ -283,7 +283,7 @@ function drawSlice(cx,cy,r,v,n,ng,color,p)
   const grad = p.drawingContext.createLinearGradient(cx, cy, cx+r, cy);
   // const grad = p.drawingContext.createRadialGradient(cx, cy, r/2, cx+r, cy,r/2);
 
-  let s = (Math.PI*2)/(n)*1.25;
+  let s = (Math.PI*2)/(n)*1.35;
 
   try{
     if(Number.isNaN(v))

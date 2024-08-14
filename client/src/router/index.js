@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HelloWorld from '../components/HelloWorld.vue'
 import home from '../components/home.vue'
+import single from '../components/single.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,8 +9,8 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: home
-      // props: { sampletime: "-120" }
-    }
+    },
+    { path: '/single', component: single },
   ]
 })
 

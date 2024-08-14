@@ -30,6 +30,8 @@ class dataBuffer:
 
         self.count = 0
         self.querry = queryFS
+        self.min = 0
+        self.max = 0
         
         self.updateStep = -1
         self.time = tim
@@ -69,7 +71,9 @@ class dataBuffer:
     def update(self):
         s = self.querry.format(time = self.updateStep, board = self.board, device = self.device, step = self.step)
         newData = self.fetchData(s)
+
         if(len(newData[0])>0):
+       
 
             if(newData[0][0] == None):
                 newData = np.delete(newData,0, axis=1)
@@ -95,7 +99,13 @@ class dataBuffer:
     def calcSpikes(self):
         if(self.Update > self.lenSpike):
             self.Update = 0
+            try:
+                self.min = np.min(self.data)
+                self.max = np.max(self.data)    
+            except Exception as e:
+                print("min max error")
             for i in range(8):
+            
                 if(len(self.data[i])> self.lenSpike):
                     arr = self.data[i][0:self.lenSpike]
                     if not None in arr:

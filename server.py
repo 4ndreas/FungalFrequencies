@@ -71,14 +71,21 @@ dataBuff = [dataBuffer.dataBuffer(buffertime, boardIDs[0], boardDevs[0],bufferst
 spikeWord = ""
 spikeBoard = 0
 spikeChannel = 0
+gMin = 0
+gMax = 0
+spikeWordCount = 0
 
 @scheduler.task('interval', id='do_job_1', seconds=5, misfire_grace_time=900)
 def job1():
-    global dataBuff, spikeWord, spikeBoard, spikeChannel
-
+    global dataBuff, spikeWord, spikeBoard, spikeChannel,spikeWordCount,gMin, gMax
+    gMin = 0
+    gMax = 0
     # print("update buffers")
     for i in range(len(dataBuff)):
         dataBuff[i].update()
+        gMin = min(dataBuff[i].min,gMin)
+        gMax = max(dataBuff[i].max,gMax)
+
         for j in range(8):
             if(dataBuff[i].spikeWord[j] != ""):  
                 spikeWord = dataBuff[i].spikeWord[j]
@@ -86,6 +93,7 @@ def job1():
                 spikeBoard = i
                 spikeChannel = j
                 dataBuff[i].spikeWord[j] = ""
+                spikeWordCount +=1
 
                 print("Board:" + str(i) + "_" + str(j) + " Data: " + spikeWord)
 
@@ -156,7 +164,15 @@ def spike():
     
     return(json.dumps(spikeData))
 
-
+@app.route("/api/stats")
+def stats():
+    global spikeWord, gMin, gMax, spikeWordCount
+    spikeData = { "min": gMin,  
+                  "max": gMax,
+                  "wordCount": spikeWordCount,
+                  "spikeWord": spikeWord}
+    
+    return(json.dumps(spikeData))
 
 @app.route('/upload', methods=['POST'])
 def upload_file():

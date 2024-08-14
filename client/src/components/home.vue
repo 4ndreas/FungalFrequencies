@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import p5chart from './p5chart.vue';
 import timerMS from './timerMS.vue';
+import stats from './stats.vue';
 import { ref, onMounted } from 'vue'
 // const props = defineProps(['sampletime'])
 
@@ -26,7 +27,7 @@ const sampletime = -120;
 <template>
     <div id="home" class="home" > 
         <div class="funghiGraph" id="oben0">
-            <timerMS/>
+
         </div>
 
         <div class="funghiGraph" id="oben1"></div>
@@ -38,7 +39,9 @@ const sampletime = -120;
         <div class="funghiGraph" id="oben4"></div>
         <p5chart :board="0" :buffered="true" :time="-90" canvas="oben4" />  
 
-        <div class="funghiGraph" id="oben5"></div>
+        <div class="funghiGraph" id="oben5">
+            <timerMS/>
+        </div>
 
         <div class="funghiGraph" id="links1"></div>
         <p5chart :board="4" :buffered="true" :time="-90" canvas="links1" />     
@@ -69,9 +72,9 @@ const sampletime = -120;
         <p5chart :board="10" :buffered="true" :time="-90" canvas="unten3"  />  
         <div class="funghiGraph" id="unten4"></div>
         <p5chart :board="11" :buffered="true" :time="-90" canvas="unten4"  />  
-        <div class="ecke" id="unten5"></div>
-        <div></div>
-        
+        <div class="ecke" id="unten5">
+            <stats/>
+        </div>        
         <div>
             <div class = "vue-canvas_center" id = "vue-canvas_ce"></div>
             <p5chart :board="0" :buffered="true" :time="-3000" :stepSize="2" :spiker="true" :radius="350" :cWidth="1200" :slicesToShow="1" canvas="vue-canvas_ce" /> 

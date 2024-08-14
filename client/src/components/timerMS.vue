@@ -12,18 +12,34 @@ function update()
 }
 
 onMounted(() => {
-  setInterval(update, 10);
+  setInterval(update, 50);
 });
 
 </script>
 
 <template>
-  <div>Online: {{ millis }} ms</div>
+  <div>
+    <div class="box">Online: {{ millis }} ms</div>
+    </div>
 </template>
 
 <style scoped>
   div {
-    /* background-color: blue; */
-    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 320px;
   }
+  .box{
+    transform-origin: 250px 0px;
+    transform: rotate(-90deg);
+    display: flex;
+    width: 70%;
+    color: white;
+    font-family: Helvetica;
+    text-align: end;
+    font-size: 20px;
+}
+
 </style>
