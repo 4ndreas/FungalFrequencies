@@ -6,6 +6,7 @@ import numpy as np
 import json
 from json import JSONEncoder
 import spiker
+from datetime import datetime, timedelta
 
 class NumpyArrayEncoder(JSONEncoder):
     def default(self, obj):
@@ -25,7 +26,7 @@ queryFS = """from(bucket: "fungalF")
     |> aggregateWindow(every: {step}s, fn: mean, createEmpty: true)"""
 
 class dataBuffer:
-    def __init__(self,tim,brd=3,dev="FungalFrequencies_7483aff9d108",step=10):
+    def __init__(self,tim,brd=3,dev="FungalFrequencies_7483aff9d108",step=10,start_date=datetime.now()):
         global queryFS
 
         self.count = 0
@@ -54,8 +55,18 @@ class dataBuffer:
         self.spikeWord = ["","","","","","","","",""]
 
 
+        self.oldData = False
+        # Aktuelles Datum und Uhrzeit
+        if( start_date != -1):
+            self.current_date = datetime.now()
+            # Differenz in Sekunden berechnen
+            self.delta_seconds = int((self.current_date - start_date).total_seconds())
+            self.oldData = True
+
         # initial querry 
-        s = self.querry.format(time = self.time, board = self.board, device = self.device, step = self.step)
+         
+        # s = self.querry.format(time = self.time, board = self.board, device = self.device, step = self.step)
+        s = self.querry.format(time = self.getTime(self.oldData,self.time), board = self.board, device = self.device, step = self.step)
         self.data = self.fetchData(s)
         if(len(self.data[0]) > self.lenSpike):
             self.Update = self.lenSpike + 1
@@ -68,8 +79,20 @@ class dataBuffer:
         return(json.dumps(numpyData, cls=NumpyArrayEncoder))
 
 
+    def getTime(self, oldData, interval):
+        if oldData:
+            startt = -int((self.delta_seconds  - ( datetime.now() - self.current_date).total_seconds()))
+            stoptt = -int((self.delta_seconds  + interval - ( datetime.now() - self.current_date).total_seconds()))
+            starttime = "{}s, stop:{}".format(startt,stoptt)
+            # print("time start: {}, stop: {} string:{}".format(startt,stoptt, starttime))
+        else:
+            starttime = interval 
+
+        return starttime
+
     def update(self):
-        s = self.querry.format(time = self.updateStep, board = self.board, device = self.device, step = self.step)
+        s = self.querry.format(time = self.getTime(self.oldData,self.updateStep), board = self.board, device = self.device, step = self.step)
+        # print(s)
         newData = self.fetchData(s)
 
         if(len(newData[0])>0):

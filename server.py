@@ -13,6 +13,7 @@ import pandas as pd
 import influxGet
 import dataBuffer
 import numpy as np
+from datetime import datetime, timedelta
 
 class Config(object):
     SCHEDULER_API_ENABLED = True
@@ -24,6 +25,28 @@ app.config.from_object(Config())
 # enable CORS
 # CORS(app, resources={r'/*': {'origins': '*'}})
 
+# code for old data 
+# Startdatum: 16. August 2024
+start_date = datetime(2024, 8, 17, 9)
+
+# Aktuelles Datum und Uhrzeit
+current_date = datetime.now()
+
+# Differenz in Sekunden berechnen
+delta_seconds = int((current_date - start_date).total_seconds())
+
+oldData = True
+
+def getTime(oldData, interval):
+    if oldData:
+        startt = -int((delta_seconds  - ( datetime.now() - current_date).total_seconds()))
+        stoptt = -int((delta_seconds  + interval - ( datetime.now() - current_date).total_seconds()))
+        starttime = "{}s, stop:{}".format(startt,stoptt)
+        # print("time start: {}, stop: {} string:{}".format(startt,stoptt, starttime))
+    else:
+        starttime = interval 
+
+    return starttime
 
 # initialize scheduler
 scheduler = APScheduler()
@@ -48,25 +71,25 @@ boardDevs = [ "FungalFrequencies_7483aff9d108","FungalFrequencies_7483aff9d108",
 
 
 
-dataBuff = [dataBuffer.dataBuffer(buffertime, boardIDs[0], boardDevs[0],bufferstep), #0 Oben board 1
-            dataBuffer.dataBuffer(buffertime, boardIDs[1], boardDevs[1],bufferstep), #1 Oben board 2
-            dataBuffer.dataBuffer(buffertime, boardIDs[2], boardDevs[2],bufferstep), #2 Oben board 3
-            dataBuffer.dataBuffer(buffertime, boardIDs[3], boardDevs[3],bufferstep), #3 Oben board 4
+dataBuff = [dataBuffer.dataBuffer(buffertime, boardIDs[0], boardDevs[0],bufferstep,start_date), #0 Oben board 1
+            dataBuffer.dataBuffer(buffertime, boardIDs[1], boardDevs[1],bufferstep,start_date), #1 Oben board 2
+            dataBuffer.dataBuffer(buffertime, boardIDs[2], boardDevs[2],bufferstep,start_date), #2 Oben board 3
+            dataBuffer.dataBuffer(buffertime, boardIDs[3], boardDevs[3],bufferstep,start_date), #3 Oben board 4
 
-            dataBuffer.dataBuffer(buffertime, boardIDs[4], boardDevs[4] ,bufferstep), #4 Links board 1
-            dataBuffer.dataBuffer(buffertime, boardIDs[5], boardDevs[5],bufferstep), #5 Links board 2
-            dataBuffer.dataBuffer(buffertime, boardIDs[6], boardDevs[6],bufferstep), #6 Links board 3
-            dataBuffer.dataBuffer(buffertime, boardIDs[7], boardDevs[7],bufferstep), #7 Links board 4
+            dataBuffer.dataBuffer(buffertime, boardIDs[4], boardDevs[4] ,bufferstep,start_date), #4 Links board 1
+            dataBuffer.dataBuffer(buffertime, boardIDs[5], boardDevs[5],bufferstep,start_date), #5 Links board 2
+            dataBuffer.dataBuffer(buffertime, boardIDs[6], boardDevs[6],bufferstep,start_date), #6 Links board 3
+            dataBuffer.dataBuffer(buffertime, boardIDs[7], boardDevs[7],bufferstep,start_date), #7 Links board 4
 
-            dataBuffer.dataBuffer(buffertime, boardIDs[8], boardDevs[8],bufferstep), #8 Unten board 1
-            dataBuffer.dataBuffer(buffertime, boardIDs[9], boardDevs[9],bufferstep), #9 Unten board 2
-            dataBuffer.dataBuffer(buffertime, boardIDs[10], boardDevs[10],bufferstep), #10 Unten board 3
-            dataBuffer.dataBuffer(buffertime, boardIDs[11], boardDevs[11],bufferstep), #11 Unten board 4
+            dataBuffer.dataBuffer(buffertime, boardIDs[8], boardDevs[8],bufferstep,start_date), #8 Unten board 1
+            dataBuffer.dataBuffer(buffertime, boardIDs[9], boardDevs[9],bufferstep,start_date), #9 Unten board 2
+            dataBuffer.dataBuffer(buffertime, boardIDs[10], boardDevs[10],bufferstep,start_date), #10 Unten board 3
+            dataBuffer.dataBuffer(buffertime, boardIDs[11], boardDevs[11],bufferstep,start_date), #11 Unten board 4
 
-            dataBuffer.dataBuffer(buffertime, boardIDs[12], boardDevs[12],bufferstep), #12 Rechts board 1
-            dataBuffer.dataBuffer(buffertime, boardIDs[13], boardDevs[13],bufferstep), #13 Rechts board 2
-            dataBuffer.dataBuffer(buffertime, boardIDs[14], boardDevs[14],bufferstep), #14 Rechts board 3
-            dataBuffer.dataBuffer(buffertime, boardIDs[15], boardDevs[15],bufferstep)] #15 Rechts board 4
+            dataBuffer.dataBuffer(buffertime, boardIDs[12], boardDevs[12],bufferstep,start_date), #12 Rechts board 1
+            dataBuffer.dataBuffer(buffertime, boardIDs[13], boardDevs[13],bufferstep,start_date), #13 Rechts board 2
+            dataBuffer.dataBuffer(buffertime, boardIDs[14], boardDevs[14],bufferstep,start_date), #14 Rechts board 3
+            dataBuffer.dataBuffer(buffertime, boardIDs[15], boardDevs[15],bufferstep,start_date)] #15 Rechts board 4
 
 spikeWord = ""
 spikeBoard = 0
@@ -127,7 +150,7 @@ def idata():
         device = request.args.get('d', default = "FungalFrequencies_7483aff9d108", type = str)
         step = request.args.get('s', default = 1, type = int)
 
-        q = influxGet.queryFS.format(time = time, board = board, device = device, step = step)
+        q = influxGet.queryFS.format(time = getTime(oldData, time), board = board, device = device, step = step)
         return(pd.Series(influxGet.fetchData(q)).to_json(orient='values'))
     except:
         return([])
@@ -142,7 +165,7 @@ def jdata():
 
         board = max(min(board,len(dataBuff)-1),0)
 
-        q = influxGet.queryFS.format(time = time, board = boardIDs[board], device = boardDevs[board], step = step)
+        q = influxGet.queryFS.format(time = getTime(oldData, time), board = boardIDs[board], device = boardDevs[board], step = step)
         return(pd.Series(influxGet.fetchData(q)).to_json(orient='values'))
     except:
         return([])

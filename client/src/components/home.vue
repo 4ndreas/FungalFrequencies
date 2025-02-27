@@ -57,9 +57,9 @@ const sampletime = -120;
         <div class="funghiGraph" id="rechts2"></div>
         <p5chart :board="14" :buffered="true" :time="-90" canvas="rechts2" />
         <div class="funghiGraph" id="rechts3"></div>
-        <p5chart :board="13" :buffered="true" :time="-90" canvas="rechts3" />       
+        <p5chart :board="3" :buffered="true" :time="-90" canvas="rechts3" />       
         <div class="funghiGraph" id="rechts4"></div> 
-        <p5chart :board="12" :buffered="true" :time="-90" canvas="rechts4" />     
+        <p5chart :board="2" :buffered="true" :time="-90" canvas="rechts4" />     
 
         <div id="centerDisplay"></div>
 
