@@ -26,7 +26,7 @@ queryFS = """from(bucket: "fungalF")
     |> aggregateWindow(every: {step}s, fn: mean, createEmpty: true)"""
 
 class dataBuffer:
-    def __init__(self,tim,brd=3,dev="FungalFrequencies_7483aff9d108",step=10,start_date=datetime.now()):
+    def __init__(self,tim,brd=3,dev="FungalFrequencies_7483aff9d108",step=10,start_date=-1):
         global queryFS
 
         self.count = 0
@@ -63,11 +63,7 @@ class dataBuffer:
             self.delta_seconds = int((self.current_date - start_date).total_seconds())
             self.oldData = True
 
-        # initial querry 
-         
-        # s = self.querry.format(time = self.time, board = self.board, device = self.device, step = self.step)
-        s = self.querry.format(time = self.getTime(self.oldData,self.time), board = self.board, device = self.device, step = self.step)
-        self.data = self.fetchData(s)
+        self.data = self.loadData(self.time)
         if(len(self.data[0]) > self.lenSpike):
             self.Update = self.lenSpike + 1
 
@@ -90,43 +86,36 @@ class dataBuffer:
 
         return starttime
 
+    def loadData(self, interval):
+        query = self.querry.format(time=self.getTime(self.oldData, interval),
+                                   board=self.board, device=self.device, step=self.step)
+        return self.fetchData(query)
+
     def update(self):
-        s = self.querry.format(time = self.getTime(self.oldData,self.updateStep), board = self.board, device = self.device, step = self.step)
-        # print(s)
-        newData = self.fetchData(s)
+        newData = self.loadData(self.updateStep)
+        sample_index = next((i for i, value in enumerate(newData[0]) if value is not None), None)
+        if sample_index is None:
+            return
 
-        if(len(newData[0])>0):
-       
+        if not self.data[0]:
+            # A board can start sending after the server has initialized its buffers.
+            self.data = self.loadData(self.time)
+        else:
+            self.data = [
+                [incoming[sample_index] if sample_index < len(incoming) else None, *previous[:-1]]
+                for incoming, previous in zip(newData, self.data)
+            ]
 
-            if(newData[0][0] == None):
-                newData = np.delete(newData,0, axis=1)
-            while (len(newData[0])>1):
-                if(newData[0][0] == None):
-                    newData = np.delete(newData,0, axis=1)
-                if(len(newData[0])>1):
-                    newData = np.delete(newData,len(newData[0])-1, axis=1)
-                else:
-                    break
-
-            # roll array
-            self.data= np.roll(self.data, (8, 1), axis=(0, 1))
-            # remove last element what is now the first
-            self.data = np.delete(self.data,0, axis=1)
-            # add new data as first element
-            self.data = np.insert(self.data, [0], newData, axis=1)
-            
-            # save update counter
-            self.Update+=1
-            self.calcSpikes()
+        self.Update += 1
+        self.calcSpikes()
 
     def calcSpikes(self):
         if(self.Update > self.lenSpike):
             self.Update = 0
-            try:
-                self.min = np.min(self.data)
-                self.max = np.max(self.data)    
-            except Exception as e:
-                print("min max error")
+            values = [value for channel in self.data for value in channel if value is not None]
+            if values:
+                self.min = min(values)
+                self.max = max(values)
             for i in range(8):
             
                 if(len(self.data[i])> self.lenSpike):
